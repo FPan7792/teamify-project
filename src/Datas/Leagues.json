@@ -1,0 +1,226 @@
+{
+  "response": [
+    {
+      "league": {
+        "id": 61,
+        "name": "Ligue 1",
+        "type": "League",
+        "logo": "https://media.api-sports.io/football/leagues/61.png"
+      },
+      "country": {
+        "name": "France",
+        "code": "FR",
+        "flag": "https://media.api-sports.io/flags/fr.svg"
+      },
+      "seasons": [
+        {
+          "year": 2021,
+          "start": "2021-08-06",
+          "end": "2022-05-21",
+          "current": true,
+          "coverage": {
+            "fixtures": {
+              "events": true,
+              "lineups": true,
+              "statistics_fixtures": true,
+              "statistics_players": true
+            },
+            "standings": true,
+            "players": true,
+            "top_scorers": true,
+            "top_assists": true,
+            "top_cards": true,
+            "injuries": false,
+            "predictions": true,
+            "odds": true
+          }
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 39,
+        "name": "Premier League",
+        "type": "League",
+        "logo": "https://media.api-sports.io/football/leagues/39.png"
+      },
+      "country": {
+        "name": "England",
+        "code": "GB",
+        "flag": "https://media.api-sports.io/flags/gb.svg"
+      },
+      "seasons": [
+        {
+          "year": 2021,
+          "start": "2021-08-13",
+          "end": "2022-05-22",
+          "current": true,
+          "coverage": {
+            "fixtures": {
+              "events": true,
+              "lineups": true,
+              "statistics_fixtures": true,
+              "statistics_players": true
+            },
+            "standings": true,
+            "players": true,
+            "top_scorers": true,
+            "top_assists": true,
+            "top_cards": true,
+            "injuries": false,
+            "predictions": true,
+            "odds": true
+          }
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 140,
+        "name": "Primera Division",
+        "type": "League",
+        "logo": "https://media.api-sports.io/football/leagues/140.png"
+      },
+      "country": {
+        "name": "Spain",
+        "code": "ES",
+        "flag": "https://media.api-sports.io/flags/es.svg"
+      },
+      "seasons": [
+        {
+          "year": 2021,
+          "start": "2021-08-13",
+          "end": "2022-05-22",
+          "current": true,
+          "coverage": {
+            "fixtures": {
+              "events": true,
+              "lineups": true,
+              "statistics_fixtures": true,
+              "statistics_players": true
+            },
+            "standings": true,
+            "players": true,
+            "top_scorers": true,
+            "top_assists": true,
+            "top_cards": true,
+            "injuries": false,
+            "predictions": true,
+            "odds": true
+          }
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 78,
+        "name": "Bundesliga 1",
+        "type": "League",
+        "logo": "https://media.api-sports.io/football/leagues/78.png"
+      },
+      "country": {
+        "name": "Germany",
+        "code": "DE",
+        "flag": "https://media.api-sports.io/flags/de.svg"
+      },
+      "seasons": [
+        {
+          "year": 2021,
+          "start": "2021-08-13",
+          "end": "2022-05-14",
+          "current": true,
+          "coverage": {
+            "fixtures": {
+              "events": true,
+              "lineups": true,
+              "statistics_fixtures": true,
+              "statistics_players": true
+            },
+            "standings": true,
+            "players": true,
+            "top_scorers": true,
+            "top_assists": true,
+            "top_cards": true,
+            "injuries": false,
+            "predictions": true,
+            "odds": true
+          }
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 94,
+        "name": "Primeira Liga",
+        "type": "League",
+        "logo": "https://media.api-sports.io/football/leagues/94.png"
+      },
+      "country": {
+        "name": "Portugal",
+        "code": "PT",
+        "flag": "https://media.api-sports.io/flags/pt.svg"
+      },
+      "seasons": [
+        {
+          "year": 2021,
+          "start": "2021-08-08",
+          "end": "2022-05-15",
+          "current": true,
+          "coverage": {
+            "fixtures": {
+              "events": true,
+              "lineups": true,
+              "statistics_fixtures": true,
+              "statistics_players": true
+            },
+            "standings": true,
+            "players": true,
+            "top_scorers": true,
+            "top_assists": true,
+            "top_cards": true,
+            "injuries": false,
+            "predictions": true,
+            "odds": true
+          }
+        }
+      ]
+    },
+    {
+      "league": {
+        "id": 135,
+        "name": "Serie A",
+        "type": "League",
+        "logo": "https://media.api-sports.io/football/leagues/135.png"
+      },
+      "country": {
+        "name": "Italy",
+        "code": "IT",
+        "flag": "https://media.api-sports.io/flags/it.svg"
+      },
+      "seasons": [
+        {
+          "year": 2021,
+          "start": "2021-08-21",
+          "end": "2022-05-22",
+          "current": true,
+          "coverage": {
+            "fixtures": {
+              "events": false,
+              "lineups": false,
+              "statistics_fixtures": false,
+              "statistics_players": false
+            },
+            "standings": true,
+            "players": true,
+            "top_scorers": true,
+            "top_assists": true,
+            "top_cards": true,
+            "injuries": false,
+            "predictions": true,
+            "odds": true
+          }
+        }
+      ]
+    }
+  ]
+}
