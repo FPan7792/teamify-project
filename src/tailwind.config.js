@@ -6,8 +6,7 @@ module.exports = {
       backgroundImage: {
         "ligue1-logo":
           "url('https://assets-fr.imgfoot.com/media/cache/642x382/ballon-uhlsport-ligue-1-2021-2022-img2.jpg')",
-        "premierleague-logo":
-          "url('https://media.api-sports.io/football/leagues/39.png')",
+        "premierleague-logo": "url('/src/assets/bundeslogo.jpeg')",
         "bundesliga-logo":
           "url('https://media.api-sports.io/football/leagues/78.png')",
         "seriea-logo":

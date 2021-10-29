@@ -29,7 +29,7 @@ const Home = () => {
       </section>
       <SearchBar />
 
-      <div className=" border-green-500 bg-white rounded-xl border-4 border-solid w-full ">
+      <div className="border-green-500 bg-white rounded-xl border-4 border-solid w-full h-full ">
         {isLoading
           ? "Chargement en cours"
           : isError

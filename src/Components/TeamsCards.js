@@ -25,21 +25,22 @@ const TeamsCards = ({ datas, players, id }) => {
   });
 
   return (
-    <section className=" border-blue-500 border-2 border-solid m-2 rounded flex w-full items-center flex-wrap flex-col ">
+    <section className=" rounded-full my-3 border-solid flex w-full items-center justify-center flex-wrap  ">
       <img src={datas.team.logo} alt={datas.team.name} width="100" />
 
-      <section className=" w-full flex flex-wrap">
+      <section
+        className=" w-full flex flex-wrap border-2 border-solid justify-center my-3 "
+        onMouseLeave={() => {
+          setCovered(true);
+        }}
+      >
         {players &&
           id === players.team.id &&
-          players.players.map((player) => {
+          players.players.map((player, index) => {
             return (
               <>
                 {!covered ? (
-                  <section
-                    onMouseLeave={() => {
-                      setCovered(true);
-                    }}
-                  >
+                  <section>
                     <section
                       onClick={() => {
                         const fetch = async () => {
@@ -106,7 +107,10 @@ const TeamsCards = ({ datas, players, id }) => {
                         fetch();
                       }}
                       onMouseOver={() => {
-                        setCovered(false);
+                        console.log(players.players);
+                        console.log(player.id);
+                        players.players[index].id === player.id &&
+                          setCovered(false);
                       }}
                       className=" border-black border-solid border-2 m-1 p-1 bg-green-100 flex items-center justify-around w-28 text-xs rounded-xl shadow cursor-pointer hover:shadow-lg"
                     >

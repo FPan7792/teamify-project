@@ -97,7 +97,7 @@ const SearchBar = () => {
           Rechercher
         </button>
         <button
-          className=" text-green-500 hover:text-green-900 h-7 w-40 rounded bg-green-100 hover:bg-green-200 hover:shadow-lg text-center rounded-xl shadow "
+          className=" text-green-500 hover:text-green-900 h-7 w-40 bg-green-100 hover:bg-green-200 hover:shadow-lg text-center rounded-xl shadow "
           onClick={() => {
             console.log(playerFetched);
             playerFetched &&

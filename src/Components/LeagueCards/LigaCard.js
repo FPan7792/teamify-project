@@ -87,10 +87,7 @@ const LeagueCards = ({ datas }) => {
                   onClick={async () => {
                     await queryClient.prefetchQuery(
                       "TeamPlayers",
-                      fetchPlayers,
-                      {
-                        staleTime: 900000,
-                      }
+                      fetchPlayers
                     );
                     await setTeamPlayers(
                       queryClient.getQueryData("TeamPlayers")

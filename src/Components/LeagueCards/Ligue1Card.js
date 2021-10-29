@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { useQueryClient } from "react-query";
 import axios from "axios";
 
+// import des icones
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 // composants
 import TeamsCards from "../TeamsCards";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 // render LIGUE1CARD
 const LeagueCards = ({ datas }) => {
@@ -42,7 +46,7 @@ const LeagueCards = ({ datas }) => {
 
   return (
     <section
-      className="border-black border-solid border-4 bg-ligue1-logo m-20 "
+      className="border-black border-solid border-4 bg-ligue1-logo m-20 h-full rounded-xl flex flex-col items-center flex-wrap "
       // prefetcher l'ensemble des équipes de la ligue au survol du composant
       onMouseEnter={async () => {
         await queryClient.prefetchQuery("Ligue1Teams", fetchTeamsFromLeagues, {
@@ -54,17 +58,18 @@ const LeagueCards = ({ datas }) => {
       {/* LIGUE 1 */}
       <p>{datas.league.name}</p>
       <button
+        className=" rounded-full h-7 w-7 border-green-800 bg-green-400 border-2 "
         onClick={() => {
           change();
         }}
       >
-        Afficher les equipes
+        <FontAwesomeIcon icon={faAngleDown} />
       </button>
       {!hidden && (
         <section>
           {/* Le tableau des equipes de la ligue : */}
           {allTeams &&
-            allTeams.response.map((team, index) => {
+            allTeams.response.map((team) => {
               const fetchPlayers = async () => {
                 try {
                   console.log("...fetching start");
@@ -79,17 +84,17 @@ const LeagueCards = ({ datas }) => {
                   return error;
                 }
               };
+              console.log(team);
               return (
-                // renvoi un composant EQUIPE
+                // renvoi un composant EQUIPE qui est de base le logo
+
                 <section
+                  className="flex flex-col"
                   key={team.team.id}
                   onClick={async () => {
                     await queryClient.prefetchQuery(
                       "TeamPlayers",
-                      fetchPlayers,
-                      {
-                        staleTime: 900000,
-                      }
+                      fetchPlayers
                     );
                     await setTeamPlayers(
                       queryClient.getQueryData("TeamPlayers")
@@ -102,6 +107,17 @@ const LeagueCards = ({ datas }) => {
                     players={teamPlayers}
                     id={team.team.id}
                   />
+                  {team.team.id === team.team.id && (
+                    <button
+                      className="bg-red-500 w-9"
+                      onClick={() => {
+                        // console.log(teamPlayers);
+                        // console.log(team  );
+                      }}
+                    >
+                      OFF
+                    </button>
+                  )}
                 </section>
               );
             })}
