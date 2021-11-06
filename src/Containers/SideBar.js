@@ -25,7 +25,10 @@ const SideBar = () => {
     let result;
     let valueAmount = "";
     if (value !== 0) {
-      if (value / 1000000 > 1) {
+      if (value / 1000000000 > 1) {
+        valueAmount = " MM";
+        result = value / 1000000000;
+      } else if (value / 1000000 > 1) {
         valueAmount = " M";
         result = value / 1000000;
       } else if (value / 1000 > 1) {
@@ -56,12 +59,11 @@ const SideBar = () => {
   });
 
   return (
-    <div className="border-black flex-initial shadow h-full m-5 p-5 bg-green-400 rounded">
-      <p className=" text-green-700 font-medium text-center">
-        Valeur totale de l'équipe : <br />
+    <div className="font-Dosis border-black flex-initial shadow-md h-full m-5 p-5 bg-white bg-opacity-80 rounded sticky top-10">
+      <p className=" text-green-700 text-xl font-medium text-center mx-8">
+        Budget engagé : <br />
         {isSuccess && (
-          <strong>
-            {/* {_.trimEnd(data.valeur, "0") + parseValue(String(data.valeur))} */}
+          <strong className="text-green-700 ">
             {parseValue(data.valeur) + "€"}
           </strong>
         )}
@@ -71,21 +73,23 @@ const SideBar = () => {
         data.equipe.map((player, index) => {
           return (
             <section
-              className="bg-red-100 rounded shadow m-2 p-2 transform hover:scale-110"
+              className="bg-green-100 bg-opacity-50 rounded shadow m-2 p-2 transform hover:scale-110"
               key={index}
               onClick={async () => {}}
             >
-              <strong>{player.name}</strong>
-              <p className="px-1 text-xs text-green-500 bg-white w-20 shadow rounded ml-16">
-                {parsePlayerValue(player.value)}
-              </p>
+              <div>
+                <strong>{player.name}</strong>
+                <p className="px-1 text-xs text-green-500 bg-white w-20 shadow rounded ml-16">
+                  {parsePlayerValue(player.value)}
+                </p>
+              </div>
               <button
-                className="bg-red-400 rounded-xl p-1 text-xs shadow hover:bg-black hover:text-white"
+                className="bg-red-400 rounded-xl mt-4 px-2 text-xs shadow hover:bg-black hover:text-white"
                 onClick={() => {
                   removePlayer.mutate(player);
                 }}
               >
-                RMV
+                Licencier
               </button>
             </section>
           );
