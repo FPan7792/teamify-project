@@ -6,21 +6,31 @@ import { fetchLeagues } from "../Requests/requests";
 
 // import des Components des différentes leagues. La requete est faites dans HOME
 // puis les datas-props sont passées dans la map des données
-// import LeagueCards from "../Components/LeagueCards";
 
+// composant test
+import Ligue1Card from "../Components/LeagueCards/Ligue1Card";
+
+//  FUTURS COMPOSANTS LIGUES
 // import PremierLeagueCard from "../Components/LeagueCards/PremierLeagueCard";
 // import LigaCard from "../Components/LeagueCards/LigaCard";
-import Ligue1Card from "../Components/LeagueCards/Ligue1Card";
 // import BundesligaCard from "../Components/LeagueCards/BundesligaCard";
 // import PrimeiraDivisionCard from "../Components/LeagueCards/PrimeiraDivisionCard";
 // import SerieACard from "../Components/LeagueCards/SerieACard";
+
+// barre de recherche 
 import SearchBar from "../Components/SearchBar";
+
+// --------------------------->
+
+// states et icones 
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDoubleDown,
   faAngleDoubleUp,
 } from "@fortawesome/free-solid-svg-icons";
+// ----------------------------->
+
 
 const Home = () => {
   // requetes des leagues dans le json stocké en local
@@ -211,3 +221,6 @@ const Home = () => {
 export default Home;
 
 // SECTION WIP
+
+// Implementer le composant leagues dans les props 
+// structure + CSS composant ligues (afficher equipes, joueurs)
