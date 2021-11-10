@@ -40,3 +40,10 @@ _Set a maximum amount for your team a control your mercato goals_
   - _Axios_
   - _Lodash_
   - _React-Router-Dom_
+
+
+
+Here for a demo 👇 :
+
+https://user-images.githubusercontent.com/85650372/141170864-1abda854-f425-4dff-8eaf-8309f13b563e.mp4
+
