@@ -1,6 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import _ from "lodash";
-import { useState } from "react";
 import { displayMyTeam, removeFromMyTeam } from "../Requests/requests";
 
 const SideBar = () => {
@@ -8,20 +6,12 @@ const SideBar = () => {
     initialData: "MyTeam",
   });
   const { isSuccess, data } = fetchMyTeam;
-  isSuccess && console.log(data);
+  // isSuccess && console.log("c'est valeur de data ");
+  // isSuccess && console.log(data);
 
   const parseValue = (value) => {
-    // let toParse = value.split("");
-    // if (toParse.length === 1) {
-    //   toParse = " 0 €";
-    // } else if (toParse.length > 1 && toParse <= 6) {
-    //   toParse = " m €";
-    // } else if (toParse.length <= 9) {
-    //   toParse = " M €";
-    // }
-    // return toParse;
-    console.log("c'est value");
-    console.log(value);
+    // console.log("ca c'est value");
+    // console.log(value);
     let result;
     let valueAmount = "";
     if (value !== 0) {
@@ -44,7 +34,7 @@ const SideBar = () => {
   };
 
   const parsePlayerValue = (value) => {
-    if (value === "0") {
+    if (value === "0" || value === "-") {
       value = "Non valorisé";
     }
     return value;
@@ -59,8 +49,8 @@ const SideBar = () => {
   });
 
   return (
-    <div className="font-Dosis border-black flex-initial shadow-md h-full m-5 p-5 bg-white bg-opacity-80 rounded sticky top-10">
-      <p className=" text-green-700 text-xl font-medium text-center mx-8">
+    <div className=" border-black flex-initial shadow-md h-full m-3 p-5 bg-white bg-opacity-80 rounded sticky top-10 font-Dosis">
+      <p className=" text-green-700 text-xl  text-center mx-8">
         Budget engagé : <br />
         {isSuccess && (
           <strong className="text-green-700 ">

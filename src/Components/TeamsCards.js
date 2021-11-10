@@ -1,8 +1,4 @@
-import {
-  fetchTransfertInfos,
-  AddPlayerToMyTeam,
-  displayMyTeam,
-} from "../Requests/requests";
+import { fetchTransfertInfos, AddPlayerToMyTeam } from "../Requests/requests";
 import { useMutation, useQueryClient } from "react-query";
 import _ from "lodash";
 import { useState } from "react";
@@ -32,18 +28,22 @@ const TeamsCards = ({ datas, players, id, setTeamPlayers }) => {
   return (
     <section className=" my-3 flex w-full items-center justify-center flex-wrap border-solid border-green-500 border-2 ">
       <section className=" flex border-green-500 border-solid border-2 w-1/4 justify-between">
-      <img className=" hover:scale-105 w-3/6 " src={datas.team.logo} alt={datas.team.name} />
+        <img
+          className=" hover:scale-105 w-3/6 "
+          src={datas.team.logo}
+          alt={datas.team.name}
+        />
 
-      {players && players.team.id === id && (
-        <button
-        className=" inline-block border-solid border-black border-2"
-          onClick={() => {
-            setDisplayPlayers(!displayPlayers);
-          }}
-        >
-          {displayPlayers ? "Cacher" : "Afficher"}
-        </button>
-      )}
+        {players && players.team.id === id && (
+          <button
+            className=" inline-block border-solid border-black border-2"
+            onClick={() => {
+              setDisplayPlayers(!displayPlayers);
+            }}
+          >
+            {displayPlayers ? "Cacher" : "Afficher"}
+          </button>
+        )}
       </section>
 
       {displayPlayers && players && players.team.id === id && (
@@ -56,7 +56,7 @@ const TeamsCards = ({ datas, players, id, setTeamPlayers }) => {
           {players &&
             id === players.team.id &&
             players.players.map((player, index) => {
-              let color = player.position === "Defender" ? "bg-purple-500" : player.position === "Midfielder" ? "bg-yellow-500" : player.position === "Attacker" && "bg-green-500"
+              // let color = player.position === "Defender" ? "bg-purple-500" : player.position === "Midfielder" ? "bg-yellow-500" : player.position === "Attacker" && "bg-green-500"
               return (
                 <>
                   {!covered ? (

@@ -8,14 +8,19 @@ import { fetchLeagues } from "../Requests/requests";
 // puis les datas-props sont passées dans la map des données
 // import LeagueCards from "../Components/LeagueCards";
 
-import PremierLeagueCard from "../Components/LeagueCards/PremierLeagueCard";
-import LigaCard from "../Components/LeagueCards/LigaCard";
+// import PremierLeagueCard from "../Components/LeagueCards/PremierLeagueCard";
+// import LigaCard from "../Components/LeagueCards/LigaCard";
 import Ligue1Card from "../Components/LeagueCards/Ligue1Card";
-import BundesligaCard from "../Components/LeagueCards/BundesligaCard";
-import PrimeiraDivisionCard from "../Components/LeagueCards/PrimeiraDivisionCard";
-import SerieACard from "../Components/LeagueCards/SerieACard";
+// import BundesligaCard from "../Components/LeagueCards/BundesligaCard";
+// import PrimeiraDivisionCard from "../Components/LeagueCards/PrimeiraDivisionCard";
+// import SerieACard from "../Components/LeagueCards/SerieACard";
 import SearchBar from "../Components/SearchBar";
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAngleDoubleDown,
+  faAngleDoubleUp,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Home = () => {
   // requetes des leagues dans le json stocké en local
@@ -23,15 +28,52 @@ const Home = () => {
   const leagues = useQuery("leagues", fetchLeagues);
   const { isLoading, isError, isSuccess, data } = leagues;
 
+  // afficgage des composants leagues
   const [displayLeagues, setDisplayLeagues] = useState(false);
   const switchDisplayLeagues = () => {
     setDisplayLeagues(!displayLeagues);
   };
 
+  // gestion des affichages des championnats par states
+  const [revealOneLigueOnHover, setRevealLigueOnHover] = useState([
+    {
+      name: "ligue1",
+      display: { identity: false, content: false },
+      content: null,
+    },
+    {
+      name: "premleague",
+      display: { identity: false, content: false },
+      content: null,
+    },
+    {
+      name: "bundesliga",
+      display: { identity: false, content: false },
+      content: null,
+    },
+    {
+      name: "seriea",
+      display: { identity: false, content: false },
+      content: null,
+    },
+    {
+      name: "portoliga",
+      display: { identity: false, content: false },
+      content: null,
+    },
+    {
+      name: "liga",
+      display: { identity: false, content: false },
+      content: null,
+    },
+  ]);
+  // set a true au survol des composants
+  // si c'est true, on change les props du composant pour afficher la transition
+
   return (
-    <div className="flex-1 flex items-center flex-col py-5 rounded-2xl my-5 ml-2 ">
-      <section className=" font-Dosis p-10 py-20 flex flex-col items-center w-full bg-black bg-opacity-50 rounded-xl ">
-        <h1 className="font-bold text-2xl mt-10 mb-20">
+    <div className="flex-1 flex items-center flex-col py-5 rounded-2xl my-5 ml-2 relative border-solid p-7 h-screen ">
+      <section className=" font-Dosis p-10 flex flex-col items-center w-full h-5/6 bg-black bg-opacity-50 rounded-xl ">
+        <h1 className="font-bold text-2xl">
           Bienvenue dans l'univers de
           <span className="text-green-100"> TEAMIFY</span>
         </h1>
@@ -43,28 +85,30 @@ const Home = () => {
       </section>
 
       {
-        <section className="mt-52 w-full border-blue-200 border-4 border-solid rounded-3xl">
-          {displayLeagues ? (
-            <button
-              className={"bg-white border-black border-2 border-solid rounded-full p-2 mx-96 "}
-              onClick={() => {
-                switchDisplayLeagues();
-              }}
-            >
-              Cacher les leagues
-            </button>
-          ) : (
-            <button
-              className="bg-black text-white rounded-full p-2 mx-96 "
-              onClick={() => {
-                switchDisplayLeagues();
-              }}
-            >
-              Afficher les leagues
-            </button>
-          )}
+        <section className=" w-full rounded-3xl flex justify-center ">
+          <button
+            className={
+              !displayLeagues
+                ? "bg-black rounded-full p-2 mt-16 mt w-9 h-9 flex justify-center items-center hover:bg-gray-50 transition-all duration-150 ease-in-out animate-bounce "
+                : "bg-black rounded-full p-2 mt-16 w-9 h-9 flex justify-center items-center transform hover:scale-125 transtion-all ease-in-out duration-150"
+            }
+            onClick={() => {
+              switchDisplayLeagues();
+            }}
+          >
+            {displayLeagues ? (
+              <FontAwesomeIcon icon={faAngleDoubleUp} color={"white"} />
+            ) : (
+              <FontAwesomeIcon
+                className="animate-bounce "
+                icon={faAngleDoubleDown}
+                color="lightgreen"
+              />
+            )}
+          </button>
+
           {displayLeagues && (
-            <div className=" bg-cover bg-no-repeat w-full rounded-xl flex flex-col items-center shadow-xl py-12 border-black border-2 border-solid ">
+            <div className=" bg-cover bg-no-repeat w-full rounded-xl flex flex-col items-center shadow-xl py-5 absolute top-full ">
               {isLoading
                 ? "Chargement en cours"
                 : isError
@@ -72,19 +116,89 @@ const Home = () => {
                 : isSuccess &&
                   data.map((league) => {
                     const id = league.league.id;
-                    return id === 39 ? (
-                        <PremierLeagueCard key={id} datas={league} />
-                    ) : id === 140 ? (
-                      <LigaCard key={id} datas={league} />
-                    ) : id === 61 ? (
-                      <Ligue1Card key={id} datas={league} />
-                    ) : id === 78 ? (
-                      <BundesligaCard key={id} datas={league} />
-                    ) : id === 94 ? (
-                      <PrimeiraDivisionCard key={id} datas={league} />
-                    ) : (
-                      id === 135 && <SerieACard key={id} datas={league} />
+
+                    return (
+                      id === 61 && (
+                        <div key={id} className=" w-full h-full flex flex-col ">
+                          <section className="flex">
+                            <div className=" flex-1">
+                              <Ligue1Card
+                                datas={league}
+                                setReveal={setRevealLigueOnHover}
+                                reveal={revealOneLigueOnHover}
+                              />
+                            </div>
+                            <div
+                              className={
+                                revealOneLigueOnHover[0].display.identity
+                                  ? " flex-initial w-2/5 transition all duration-1000 text-black opacity-100 ease-out delay-500 flex flex-col justify-center items-center text-xs "
+                                  : " flex-initial w-2/5 transition all duration-1000 text-black opacity-0 ease-in flex flex-col justify-center items-center text-xs "
+                              }
+                            >
+                              <img
+                                className="rounded-full w20 h-20"
+                                src={league.league.logo}
+                                alt={league.league.name}
+                              />
+                              <p>Nom: {league.league.name}</p>
+                              <p>Pays: {league.country.name}</p>
+                              <p>Début officiel: {league.seasons[0].start}</p>
+                              <p>Fin officielle: {league.seasons[0].end}</p>
+                            </div>
+                          </section>
+
+                          <section
+                            className={
+                              !revealOneLigueOnHover[0].display.content
+                                ? " w-full justify-center items-center flex-col py-10  h-0 transition-opacity duration-1000 ease-in opacity-0 text-xs "
+                                : " w-full justify-center items-center flex-col py-10 transition-opacity ease-out delay-200 duration-500 opacity-100 h-full text-xs "
+                            }
+                          >
+                            {/* <p>
+                              Iic faire passer les inforamtion nécéssaires au
+                              moment du clic pour présenter léquipe et les
+                              joueurs
+                            </p>
+                            <p>Deuxieme element </p> */}
+                            <section className="flex flex-shrink overflow-x-scroll ">
+                              {revealOneLigueOnHover[0].content &&
+                                revealOneLigueOnHover[0].content.map(
+                                  (equipe) => {
+                                    console.log(equipe);
+                                    return (
+                                      <div
+                                        key={equipe.team.id}
+                                        className="border-blue-200 border-2 border-solid  p-10 flex h-full flex-shrink-0 flex-col justify-center items-center"
+                                      >
+                                        {equipe.team.name}
+                                        <img
+                                          src={equipe.team.logo}
+                                          alt={equipe.team.name}
+                                          width="50"
+                                        />
+                                      </div>
+                                    );
+                                  }
+                                )}
+                            </section>
+                          </section>
+                          <div className=" my-2 p-5 bg-blue-100 w-4/5 h-full"></div>
+                        </div>
+                      )
                     );
+
+                    // id === 39 ? (
+                    //     <PremierLeagueCard key={id} datas={league} />
+                    // ) : id === 140 ? (
+                    //   <LigaCard key={id} datas={league} />
+                    // ) :
+                    // ) : id === 78 ? (
+                    //   <BundesligaCard key={id} datas={league} />
+                    // ) : id === 94 ? (
+                    //   <PrimeiraDivisionCard key={id} datas={league} />
+                    // ) : (
+                    //   id === 135 && <SerieACard key={id} datas={league} />
+                    // );
                   })}
             </div>
           )}
@@ -95,3 +209,5 @@ const Home = () => {
 };
 
 export default Home;
+
+// SECTION WIP

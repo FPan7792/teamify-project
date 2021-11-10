@@ -5,16 +5,21 @@ import Main from "./Containers/Main";
 
 // import des icones
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faAngleDown, faSearch } from "@fortawesome/free-solid-svg-icons";
-library.add(faAngleDown, faSearch);
+import {
+  faAngleDown,
+  faSearch,
+  faAngleDoubleDown,
+} from "@fortawesome/free-solid-svg-icons";
+library.add(faAngleDown, faSearch, faAngleDoubleDown);
 
 function App() {
   return (
-    <div
-      className="bg-main-bg bg-center bg-no-repeat bg-cover h-screen font-Dosis"
-    >
-      <Header />
-      <Main />
+    <div className="relative">
+      <section className=" rounded absolute top-0 bg-main-bg bg-center bg-no-repeat h-screen w-full bg-cover font-Dosis"></section>
+      <>
+        <Header />
+        <Main />
+      </>
     </div>
   );
 }

@@ -28,9 +28,15 @@ export const displayMyTeam = () => {
 export const AddPlayerToMyTeam = (player) => {
   myTeam.equipe.push(player);
 
+  // console.log("je syus add ");
+  // console.log(player.value);
+
   if (player.value === "-") {
-    player.value = "0 €";
+    player.value = "0";
   }
+
+  // console.log("je suis player.value apres traitement ");
+  // console.log(player.value);
 
   const value = player.value.split("");
 
@@ -49,8 +55,6 @@ export const AddPlayerToMyTeam = (player) => {
   }
 
   let playerFinalValue = Number(newValue.join(""));
-
-  console.log(playerFinalValue);
   if (millions) {
     myTeam.valeur += playerFinalValue * 1000000;
   } else myTeam.valeur += playerFinalValue * 1000;
@@ -66,6 +70,11 @@ export const removeFromMyTeam = (player) => {
 
   function parseValue() {
     let parse;
+
+    if (player.value === 0 || player.value === "0") {
+      parse = 0;
+      return parse;
+    }
 
     if (_.endsWith(player.value, "mio. €")) {
       parse = _.replace(player.value, " mio. €", "");
@@ -89,6 +98,15 @@ export const removeFromMyTeam = (player) => {
   }
   const value = parseValue();
 
+  console.log("c'esr value");
+  console.log(value);
+
+  console.log("cest valeur de myteam");
+  console.log(myTeam.valeur);
+
   myTeam.valeur -= value;
+
+  console.log("ca c'est lyream");
+  console.log(myTeam);
   return myTeam;
 };
