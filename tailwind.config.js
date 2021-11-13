@@ -46,6 +46,7 @@ module.exports = {
       display: ["hover", "focus"],
       backgroundColor: ["active"],
       textColor: ["active"],
+      fontWeight: ["focus-within"],
     },
   },
   plugins: [],

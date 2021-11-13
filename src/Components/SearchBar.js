@@ -160,7 +160,7 @@ const SearchBar = () => {
                 validAddPlayers &&
                   provideAlert(
                     <p className=" transition-all duration-1000 font-bold text-green-100 ">
-                      Félicitation ! {playerFetched.name} viens de rejoindre ton
+                      Félicitation ! {playerFetched.name} vient de rejoindre ton
                       équipe !
                     </p>
                   );

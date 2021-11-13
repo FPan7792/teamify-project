@@ -1,7 +1,17 @@
+// navigation du site
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+
+} from "react-router-dom";
+
 import "./App.css";
 // import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Header from "./Containers/Header";
 import Main from "./Containers/Main";
+import LogIn from "./Containers/LogIn";
+import SignUp from "./Containers/SignUp";
 
 // import des icones
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -12,15 +22,31 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 library.add(faAngleDown, faSearch, faAngleDoubleDown);
 
+
 function App() {
   return (
+
+    <Router>
+
     <div className="relative">
-      <section className=" rounded absolute top-0 bg-main-bg bg-center bg-no-repeat h-screen w-full bg-cover font-Dosis"></section>
-      <>
-        <Header />
-        <Main />
-      </>
+      <section className=" rounded absolute top-0 bg-main-bg bg-center bg-no-repeat h-screen w-full bg-cover font-Dosis "></section>
+      <div className="h-screen">
+          <Header />
+        <Switch>
+          <Route path="/login">
+            <LogIn/>
+          </Route>
+          <Route path="/signup">
+            <SignUp/>
+          </Route>
+          <Route path="/" >
+            <Main  />
+          </Route>
+        </Switch>
+      </div>
     </div>
+
+    </Router>
   );
 }
 
