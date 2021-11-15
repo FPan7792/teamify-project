@@ -1,76 +1,144 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
+import _ from "lodash";
+
+// GESTION DU FORMULAIRE
+import { useForm } from "react-hook-form";
 
 function SignUp() {
-  // css des inputs
+  // css conditionnel des inputs
   const inputStyle =
-    "h-10 mb-5 w-4/6 rounded-full text-center mx-auto text-xs text-black focus:outline-none focus:bg-green-100 focus-within:font-bold shadow focus:ring-4 focus:ring-green-300";
+    " transition-all duration-200 h-10 mb-5 w-4/6 rounded-full text-center mx-auto text-xs text-black focus:outline-none focus:bg-green-100 focus-within:font-bold shadow focus:ring-4 focus:ring-green-300";
 
   const noValidInputStyle =
-    "h-10 mb-5 w-4/6 rounded-full text-center mx-auto text-xs text-black focus:outline-none focus:bg-green-100 focus-within:font-bold shadow focus:ring-4 focus:ring-red-500";
+    " transition-all duration-500 h-10 mb-5 w-4/6 rounded-full text-center mx-auto text-xs text-black focus:outline-none focus:bg-green-100 focus-within:font-bold shadow focus:ring-4 focus:ring-red-500";
+
+  // ====================>
 
   // message d'alerte
-  const [alerte, setAlerte] = useState({ text: "", display: false });
-
-  // validation du form
-  const [formInputIsValid, setFormInputIsValid] = useState({
-    userName: false,
-    email: false,
-    password: false,
-    confirmPassword: false,
+  const [alerte, setAlerte] = useState({
+    message: null,
+    display: false,
+    success: true,
   });
 
-  useEffect(() => {}, [formInputIsValid]);
+  const provideAlerte = (message, display, success) => {
+    setAlerte({ message, display, success });
 
-  const verif = () => {
-    const result = userName.split("");
-    if (result.length >= 3) {
-      formInputIsValid.userName = true;
-      console.log(result.length);
-    } else if (result.length < 3) formInputIsValid.userName = false;
+    setTimeout(function () {
+      setAlerte({ ...alerte, message, display: false });
+    }, 4000);
   };
 
   // collecte et envoie des form
-  const [userName, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleUserNameChange = (e) => {
-    const value = e.target.value;
-    setUsername(value);
-    verif();
-    console.log(formInputIsValid);
+  // =================================>
+  const [validation, setValidation] = useState(true);
+
+  const [username, setUsername] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [confirmPassword, setConfirmPassword] = useState(null);
+  // ==================================>
+
+  // react hook form
+  const {
+    register,
+    handleSubmit,
+    resetField,
+    setError,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    setValidation(true);
+    console.log(data);
+    const infos = {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      confirmPassword: data.confirmPassword,
+    };
+    console.log(infos);
+
+    const sendInfos = async () => {
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:3001/user/signup",
+          infos
+        );
+        console.log(response.data);
+        provideAlerte(
+          "Votre compte à bien été créé, Bienvenue dans l'équipe !",
+          true,
+          true
+        );
+      } catch (error) {
+        console.log(error.response);
+        if (error.response.data === "This email already has an account") {
+          setError(
+            "email",
+            { message: "should change email" },
+            { shouldFocus: true }
+          );
+          return provideAlerte(
+            "Cet email dispose déja d'un compte",
+            true,
+            false
+          );
+        } else if (error.response.data === "Username already taken") {
+          setError(
+            "username",
+            { message: "should change username" },
+            { shouldFocus: true }
+          );
+          return provideAlerte(
+            "Ce nom d'utilisateur est déja pris",
+            true,
+            false
+          );
+        }
+      }
+    };
+
+    if (data.password === data.confirmPassword) {
+      sendInfos();
+    } else setValidation(false);
   };
 
-  const handleEmailChange = (e) => {
-    const value = e.target.value;
-    setEmail(value);
+  const onError = () => console.log(errors);
+
+  const resetAll = () => {
+    resetField("username");
+    resetField("email");
+    resetField("password");
+    resetField("confirmPassword");
   };
 
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    setPassword(value);
+  const errorsInputStyle =
+    " transtion-all duration-500 text-red-500 font-bold opacity-100 h-full ";
+  const errorsInputStyleInvisible =
+    " transtion-all duration-1000 font-bold opacity-0 h-0";
+
+  // Message erreurs
+  // ---------------------------------
+  const errorMessages = {
+    required: "Ce champs est requis",
+    minLength: "Ce champs requiert au moins 6 caractères",
+    validate: "✅",
   };
 
-  const handleConfirmPasswordChange = (e) => {
-    const value = e.target.value;
-    setConfirmPassword(value);
+  const { required, minLength, validate } = errorMessages;
+  // ==============================>
+
+  const parseEmail = (value) => {
+    let result = _.trim(value, " ");
+    result = _.replace(result, " ", "");
+    // console.log(result);
+    return result;
   };
-
-  // validation du formulaire
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setAlerte({
-      ...alerte,
-      text: "Ton compte à bien été créé. Bienvenue dans l'équipe !",
-      display: !alerte.display,
-    });
-  };
-
-  //   affichage de validation
-
-  //   const [validation, setValidation] = useState(false);
 
   return (
     <div className=" relative font-Dosis overflow-hidden">
@@ -80,61 +148,150 @@ function SignUp() {
         </h1>
         <form
           className=" flex flex-col justify-center items-center h-full w-5/6 text-green-100 "
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit, onError)}
         >
           <section className=" flex flex-col w-full ">
             <p className="w-2/6">Nom d'utilisateur</p>
             <input
-              className={
-                formInputIsValid.userName ? inputStyle : noValidInputStyle
-              }
-              type="text"
-              placeholder="Nom d'utilisateur"
-              value={userName}
-              name="username"
-              onChange={handleUserNameChange}
+              className={!errors.username ? inputStyle : noValidInputStyle}
+              placeholder="Ton nom d'utilisateur"
+              {...register("username", {
+                required: "Ce champs est requis",
+                minLength: 5,
+                pattern: /^[\w]+$/,
+                validate: (value) => {
+                  setUsername(value);
+                },
+              })}
             />
           </section>
+          <span
+            className={
+              errors.username ? errorsInputStyle : errorsInputStyleInvisible
+            }
+          >
+            {errors?.username?.type === "required"
+              ? required
+              : errors?.username?.type === "minLength"
+              ? minLength
+              : errors?.username?.type === "pattern"
+              ? "Les lettres, les chiffres et le '_' sont autorisés"
+              : validate}
+          </span>
 
           <section className=" flex flex-col w-full ">
             <p className="w-2/6">E-mail</p>
             <input
-              className={inputStyle}
-              type="text"
-              placeholder="Adresse email"
-              value={email}
-              name="email"
-              onChange={handleEmailChange}
+              className={!errors.email ? inputStyle : noValidInputStyle}
+              placeholder="Ton adresse email"
+              {...register("email", {
+                required: "Ce champs est requis",
+                pattern: /[@]/g,
+                // setValueAs: (value) => {
+                //   parseEmail(value);
+                //   setEmail(value);
+                // },
+                validate: (value) => {
+                  value = parseEmail(value);
+                  console.log("on vient de parser");
+                  setEmail(value);
+                  console.log(email);
+                },
+              })}
             />
           </section>
+          <span
+            className={
+              errors.email ? errorsInputStyle : errorsInputStyleInvisible
+            }
+          >
+            {errors?.email?.type === "required"
+              ? required
+              : errors?.email?.type === "minLength"
+              ? minLength
+              : errors?.email?.type === "pattern"
+              ? "Email non valide"
+              : validate}
+          </span>
 
           <section className=" flex flex-col w-full ">
             <p className="w-2/6">Mot de passe</p>
             <input
-              className={inputStyle}
-              type="text"
-              placeholder="Mot de passe"
-              value={password}
-              name="password"
-              onChange={handlePasswordChange}
+              className={!errors.password ? inputStyle : noValidInputStyle}
+              placeholder="Ton mot de passe "
+              type="password"
+              {...register("password", {
+                required: "Ce champs est requis",
+                minLength: 6,
+                pattern: /^[\S]+$/,
+                validate: (value) => {
+                  setPassword(value);
+                },
+              })}
             />
           </section>
+          <span
+            className={
+              errors.password ? errorsInputStyle : errorsInputStyleInvisible
+            }
+          >
+            {errors?.password?.type === "required"
+              ? required
+              : errors?.password?.type === "minLength"
+              ? minLength
+              : errors?.password?.type === "pattern"
+              ? "Au moins une lettre et un chiffre sont requis"
+              : validate}
+          </span>
 
           <section className=" flex flex-col w-full ">
             <p className="w-2/6">Confirmer mot de passe</p>
             <input
-              className={inputStyle}
-              type="text"
-              placeholder="Confirmation du mot de passe"
-              value={confirmPassword}
-              name="ConfirmPassword"
-              onChange={handleConfirmPasswordChange}
+              className={
+                !errors.confirmPassword ? inputStyle : noValidInputStyle
+              }
+              type="password"
+              placeholder="Confirme ton mot de passe "
+              {...register("confirmPassword", {
+                required: "Ce champs est requis",
+                minLength: 6,
+                pattern: /^[\S]+$/g,
+                validate: (value) => {
+                  setConfirmPassword(value);
+                },
+              })}
             />
           </section>
-          <button className=" p-2 px-3 rounded-full bg-green-500 bg-opacity-80 text-white font-bold transform hover:scale-105">
+          <span
+            className={
+              errors.confirmPassword || !validation
+                ? errorsInputStyle
+                : errorsInputStyleInvisible
+            }
+          >
+            {errors?.confirmPassword?.type === "required"
+              ? required
+              : errors?.confirmPassword?.type === "minLength"
+              ? minLength
+              : errors?.confirmPassword?.type === "pattern"
+              ? "Au moins une lettre et un chiffre sont requis"
+              : !validation
+              ? "Les 2 mots de passes doivent être identiques "
+              : validate}
+          </span>
+
+          <button className=" p-2 px-3 rounded-full bg-green-500 bg-opacity-80 text-white font-bold transform hover:scale-105 active:bg-green-800">
             Valider{" "}
           </button>
         </form>
+        <button
+          className="p-1 mt-2 bg-red-500 bg-opacity-80 active:bg-red-800 text-white font-bold rounded text-xs"
+          onClick={() => {
+            resetAll();
+          }}
+        >
+          Réinitialiser tous les champs
+        </button>
         <section className="text-green-100 py-6 flex flex-col justify-center items-center">
           Tu as déja un compte ?
           <Link to="/login">
@@ -145,13 +302,14 @@ function SignUp() {
       <section
         className={
           alerte.display
-            ? " transition-all duration-1000 absolute bottom-1 right-5 bg-green-200 bg-opacity-100 rounded p-10 ease-in-out"
+            ? alerte.success
+              ? " transition-all duration-1000 absolute bottom-1 right-5 bg-green-200 bg-opacity-100 rounded p-10 ease-in-out"
+              : " transition-all duration-1000 absolute bottom-1 right-5 bg-yellow-200 bg-opacity-100 rounded p-10 ease-in-out  "
             : " transition-all duration-1000 absolute bottom-1 right-5 bg-green-200 bg-opacity-50 rounded p-10 opacity-0 ease-in-out "
         }
       >
-        {alerte.text}
+        {alerte.message}
       </section>
-      )
     </div>
   );
 }

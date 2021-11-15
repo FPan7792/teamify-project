@@ -40,3 +40,4 @@ _Set a maximum amount for your team a control your mercato goals_
   - _Axios_
   - _Lodash_
   - _React-Router-Dom_
+  - _React-Hook-Form_
