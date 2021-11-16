@@ -39,5 +39,19 @@ _Set a maximum amount for your team a control your mercato goals_
   - _ReactQuery_
   - _Axios_
   - _Lodash_
-  - _React-Router-Dom_
+  - _React-Router-Dom_ (_v5_)
   - _React-Hook-Form_
+
+**_This project is running with yarn (package manager)_**
+
+To run the project on your own machine do :
+
+```javascript
+npm install -y
+```
+
+**_then_**
+
+```javascript
+yarn start
+```
