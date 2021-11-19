@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "react-query";
+import {
+  alerteErrorFormEmail,
+  alerteValidationCreateAccount,
+} from "../Requests/requests";
+
+import axios from "axios";
 
 // GESTION DU FORMULAIRE
 import { useForm } from "react-hook-form";
+
+// Gestion des cookies de connexion
+import Cookies from "js-cookie";
 
 function LogIn() {
   // css conditionnel des inputs
@@ -14,19 +24,23 @@ function LogIn() {
   // ====================>
 
   // message d'alerte
-  const [alerte, setAlerte] = useState({
-    message: null,
-    display: false,
-    success: true,
+  // GESTION DE LA FENETRE D'ALERTE
+  const queryClient = useQueryClient();
+  const alerteEmail = useMutation("Alerte", alerteErrorFormEmail, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("Alerte");
+    },
   });
 
-  const provideAlerte = (message, display, success) => {
-    setAlerte({ message, display, success });
-
-    setTimeout(function () {
-      setAlerte({ ...alerte, message, display: false });
-    }, 4000);
-  };
+  const alerteValidation = useMutation(
+    "Alerte",
+    alerteValidationCreateAccount,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("Alerte");
+      },
+    }
+  );
 
   // collecte et envoie des form
   const [email, setEmail] = useState(null);
@@ -37,25 +51,50 @@ function LogIn() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm();
 
   const onSubmit = (data) => {
     console.log(data);
-    console.log("Je viens d remplir email avec ca ");
-    setEmail(data.email);
-    console.log(email);
-    console.log("Je viens d remplir password avec ca ");
-    setPassword(data.password);
-    console.log(password);
+    const infos = {
+      email: data.email,
+      password: data.password,
+    };
 
-    setAlerte({
-      ...alerte,
-      message: "Tu es maintenant connecté. Bienvenue !",
-      display: !alerte.display,
-    });
+    const sendInfos = async () => {
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:3001/user/login",
+          infos
+        );
+        console.log(response.data);
+
+        const { token } = response.data;
+        Cookies.set("userToken", token);
+
+        return alerteValidation.mutate();
+      } catch (error) {
+        console.log(error.response);
+        setError(
+          "email",
+          { message: "should change email" },
+          { shouldFocus: true }
+        );
+        return alerteEmail.mutate(
+          "Erreur d'authentification. Email ou mot de passe incorrect "
+        );
+      }
+    };
+
+    if (data.email && data.password) {
+      // ajouter redirection
+      sendInfos();
+    }
   };
-  const onError = () => console.log(errors);
+  const onError = () => {
+    console.log(errors);
+  };
 
   const errorsInputStyle =
     " transtion-all duration-500 text-red-500 font-bold opacity-100 h-full ";
@@ -74,13 +113,13 @@ function LogIn() {
   // ==============================>
 
   return (
-    <div className=" relative font-Dosis overflow-hidden ">
-      <section className="bg-black bg-opacity-70 w-4/6 relative m-auto mt-20 rounded-lg flex flex-col items-center ">
-        <h1 className="text-2xl text-green-200 font-bold py-10">
+    <div className=" relative font-Dosis h-screen flex justify-center items-center ">
+      <section className="bg-black bg-opacity-70 w-4/6 relative rounded-lg flex flex-col items-center -mt-20 ">
+        <h1 className="text-2xl text-green-200 font-bold py-20">
           Connectes-toi pour retrouver tes équipes !
         </h1>
         <form
-          className=" flex flex-col justify-center items-center h-full w-5/6 text-green-100 "
+          className=" flex flex-col justify-center items-center h-full w-5/6 text-green-300 "
           onSubmit={handleSubmit(onSubmit, onError)}
         >
           <section className=" flex flex-col w-full ">
@@ -123,29 +162,17 @@ function LogIn() {
               : validate}
           </span>
 
-          <button className=" my-5 p-2 px-3 rounded-full bg-green-500 bg-opacity-80 text-white font-bold transform hover:scale-105">
+          <button className=" my-5 p-2 px-3 rounded-full bg-green-500 bg-opacity-80 text-white font-bold transform hover:scale-105 active:bg-green-700">
             Valider{" "}
           </button>
         </form>
-        <section className="text-green-100 py-6 flex flex-col justify-end items-center">
+        <section className="text-green-300 py-6 flex flex-col justify-end items-center">
           Tu n'as pas encore de compte ?
           <Link to="/signup">
             <p className="hover:underline">Viens vite t'inscrire ici !</p>
           </Link>
         </section>
       </section>
-
-      <div className="flex justify-end ">
-        <section
-          className={
-            alerte.display
-              ? " transition-all duration-1000 inline-block bg-green-500 rounded p-10 ease-in-out mt-5 mr-10 w-2/6 text-center text-white font-bold bg-opacity-100 border-2 border-white border-solid "
-              : " transition-all duration-1000 inline-block bg-green-500 rounded p-10 transform translate-y-30 opacity-0 ease-in-out mt-5 mr-10 w-2/6 text-center text-white font-bold bg-opacity-0 border-2 border-white border-solid "
-          }
-        >
-          {alerte.message}
-        </section>
-      </div>
     </div>
   );
 }

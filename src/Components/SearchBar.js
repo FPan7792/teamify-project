@@ -12,17 +12,22 @@ import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const SearchBar = () => {
   const [search, setSearch] = useState("");
-  const [playerFetched, setPlayerFetched] = useState();
+  const [playerFetched, setPlayerFetched] = useState(null);
 
   // afficher un message à l'utlisateur en cas d'erreur
-  const [alert, setAlert] = useState();
+  const [alert, setAlert] = useState({
+    message: null,
+    success: null,
+    display: false,
+  });
 
-  const provideAlert = (message) => {
-    setAlert(message);
+  const provideAlert = (message, success) => {
+    setAlert({ message, success, display: true });
 
-    setTimeout(function () {
-      setAlert();
-    }, 3000);
+    setTimeout(
+      () => setAlert({ message, success: null, display: false }),
+      3000
+    );
   };
 
   // EMPECHER L AJOUT DU MEME JOUEUR PLUSIEURS FOIS DANS LA MEME EQUIPE
@@ -38,6 +43,15 @@ const SearchBar = () => {
       queryClient.invalidateQueries("MyTeam");
     },
   });
+
+  // valider l'ajout de joueurs a l'equipe
+  const addPlayerValidation = () => {
+    AddPlayer.mutate(playerFetched);
+    provideAlert(
+      `Félicitation ! ${playerFetched.name} vient de rejoindre ton équipe !`,
+      "OK"
+    );
+  };
 
   // TRUE de base. on set a FALSE si le joueur est deja dans l'équipe pour empecher l'ajout
   const [validAddPlayers, setValidAddPlayers] = useState(true);
@@ -61,26 +75,33 @@ const SearchBar = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetch = async () => {
+    // Activation de l'icone de charge
     setIsLoading(true);
 
-    const response = await fetchTransfertInfos(search);
-    console.log(response);
+    try {
+      // on lance une recherche vers le back avec les données de search (entrée dans la barre de recherche )
+      const response = await fetchTransfertInfos(search);
 
-    // retourne false si le joueur est deja dans l'équipe
-    const valid = await checkAndAdd(response.name);
-
-    if (!valid) {
-      setValidAddPlayers(false);
+      // retourne false si le joueur est deja dans l'équipe
+      if (response === "400" || response === "404") {
+        provideAlert("Aucun joueur ne correspond à ta recherche 🥺", "NO");
+      } else {
+        setPlayerFetched(response);
+        const valid = await checkAndAdd(response.name);
+        if (!valid) {
+          await setValidAddPlayers(false);
+        } else setPlayerFetched(response);
+      }
+    } catch (error) {
+      console.log(error.response);
     }
 
-    // on envoie les données de transfert dans PlayerFetched
-    setPlayerFetched(response);
-
+    // Desactivation de l'icone de charge
     setIsLoading(false);
   };
 
   return (
-    <section className=" m-10 h-4/5 w-4/5 rounded-xl flex flex-col items-center justify-center ">
+    <section className=" m-10 h-4/5 w-4/5 rounded-xl flex flex-col items-center justify-center">
       <div className=" flex w-full justify-center items-center ">
         <FontAwesomeIcon
           className={
@@ -119,74 +140,88 @@ const SearchBar = () => {
       </div>
       <section
         className={
-          playerFetched || alert
-            ? " transition-all duration-1000 shadow p-5 bg-white bg-opacity-50 rounded-md w-3/5 flex justify-center items-center flex-col "
-            : " opacity-0 transition-all duration-500 shadow p-5 bg-white rounded-md w-3/5 flex justify-center items-center flex-col"
+          playerFetched || alert.display
+            ? " opacity-100 transition-all duration-500 ease-in-out shadow p-5 bg-black bg-opacity-80 rounded-md w-3/5 flex justify-center items-center flex-col "
+            : " opacity-0 transition-all duration-500 ease-in shadow p-5 bg-white bg-opacity-30 rounded-md w-3/5 flex justify-center items-center flex-col"
         }
       >
-        <span
+        <div>
+          <section
+            className={
+              alert.success === "OK"
+                ? " transition-all duration-500 border-green-500 border-2 flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-green-100 m-5 "
+                : alert.success === "NO"
+                ? " transition-all duration-500 border-red-500 border-2 flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-red-100 m-5 "
+                : playerFetched
+                ? " transition-all duration-500 flex items-center justify-center flex-col p-4 opacity-100 bg-white m-5 rounded-xl border-white border-2 border-solid "
+                : " transition-all duration-500 flex items-center justify-center flex-col p-4 opacity-0 bg-white m-5 rounded-xl border-white border-2 border-solid "
+            }
+          >
+            {playerFetched ? (
+              <>
+                <p className="font-bold text-xl">{playerFetched.name}</p>
+                <p className="italic text-green-700 ">{playerFetched.value}</p>
+              </>
+            ) : (
+              alert.message && (
+                <p
+                  className={
+                    alert.success === "NO"
+                      ? " transition-all duration-500 font-bold font-Dosis italic text-red-500 opacity-100 text-center "
+                      : alert.success === "OK"
+                      ? " transition-all duration-500 font-bold font-Dosis italic text-green-700 opacity-100 text-center"
+                      : !alert.success &&
+                        " transition-all duration-500 font-bold font-Dosis italic text-yellow-400 text-center"
+                  }
+                >
+                  {alert.message}
+                </p>
+              )
+            )}
+          </section>
+        </div>
+
+        <section
           className={
-            !alert
-              ? " invisible transition-all font-bold duration-1000 ease-in-out transform -translate-x-60 opacity-0 "
-              : " visible font-bold transition-all duration-1000 ease-in-out opacity-100"
+            playerFetched
+              ? " transition-all duration-1000 flex w-2/3 justify-between items-center opacity-100 "
+              : " opacity-0 transition-all duration-1000 flex w-2/3 justify-between items-center "
           }
         >
-          {alert}
-        </span>
-
-        <section className="m-5">
-          {playerFetched && (
-            <section className=" border-solid border-green-500 border-2 flex items-center justify-center flex-col p-4 bg-opacity-80 bg-white rounded-xl ">
-              <p className="font-bold text-xl  ">{playerFetched.name}</p>
-              <p className="italic text-green-800 ">{playerFetched.value}</p>
-            </section>
-          )}
+          <button
+            className="active:bg-green-900 active:text-white active:scale-105 inline-block my-2 text-green-700 hover:text-green-900 h-full bg-green-100 hover:bg-green-200 hover:shadow-lg text-center rounded-xl shadow px-3 font-bold transform hover:scale-105 "
+            onClick={async () => {
+              console.log(playerFetched);
+              playerFetched
+                ? validAddPlayers
+                  ? addPlayerValidation()
+                  : provideAlert("Ce joueur est déja dans ton effectif !", "NO")
+                : console.log("NOTHING  TO ADD ");
+              // on vide l'input, la variable JOUEUR et on permet de nouveau l'ajout
+              setPlayerFetched();
+              setSearch("");
+              setValidAddPlayers(true);
+            }}
+          >
+            Recruter{" "}
+            {
+              playerFetched?.name?.split(" ")[
+                playerFetched.name.split(" ").length - 1
+              ]
+            }{" "}
+          </button>
+          <button
+            className="bg-red-600 bg-opacity-60 text-white font-bold rounded-full px-2 transform hover:scale-105 h-7 hover:bg-red-700 "
+            onClick={() => {
+              provideAlert("Abandon du contrat", null);
+              setPlayerFetched();
+              setSearch("");
+              setValidAddPlayers(true);
+            }}
+          >
+            Annuler
+          </button>
         </section>
-        {playerFetched ? (
-          <section className=" transition-all duration-1000 flex w-2/3 justify-between items-center ">
-            <button
-              className="active:bg-green-900 active:text-white active:scale-105 inline-block my-2 text-green-700 hover:text-green-900 h-full bg-green-100 hover:bg-green-200 hover:shadow-lg text-center rounded-xl shadow px-3 font-bold transform hover:scale-105 "
-              onClick={async () => {
-                console.log(playerFetched);
-                playerFetched &&
-                  playerFetched !== 404 &&
-                  ((await validAddPlayers)
-                    ? AddPlayer.mutate(playerFetched)
-                    : provideAlert(
-                        <p className=" transition-all duration-1000 font-bold text-red-600 ">
-                          Ce joueur est déja dans ton effectif !
-                        </p>
-                      ));
-                validAddPlayers &&
-                  provideAlert(
-                    <p className=" transition-all duration-1000 font-bold text-green-100 ">
-                      Félicitation ! {playerFetched.name} vient de rejoindre ton
-                      équipe !
-                    </p>
-                  );
-
-                // on vide l'input, la variable JOUEUR et on permet de nouveau l'ajout
-                setPlayerFetched();
-                setSearch("");
-                setValidAddPlayers(true);
-              }}
-            >
-              Recruter {playerFetched.name && playerFetched.name.split(" ")[1]}{" "}
-            </button>
-            <button
-              className="bg-red-600 bg-opacity-60 text-white font-bold rounded-full px-2 transform hover:scale-105 h-7 hover:bg-red-700 "
-              onClick={() => {
-                setPlayerFetched();
-                setSearch("");
-                setValidAddPlayers(true);
-              }}
-            >
-              Annuler
-            </button>
-          </section>
-        ) : (
-          <section className=" opacity-0 my-2 px-3 "></section>
-        )}
       </section>
     </section>
   );
