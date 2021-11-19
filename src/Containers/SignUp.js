@@ -1,11 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
-
 import _ from "lodash";
+import { useMutation, useQueryClient } from "react-query";
+import {
+  alerteErrorFormEmail,
+  alerteErrorFormUsername,
+  alerteValidationCreateAccount,
+} from "../Requests/requests";
+
+// GESTION DE LA NAVIGATION
+import { Link } from "react-router-dom";
 
 // GESTION DU FORMULAIRE
 import { useForm } from "react-hook-form";
+
+// Gestion des cookies de connexion
+import Cookies from "js-cookie";
 
 function SignUp() {
   // css conditionnel des inputs
@@ -17,33 +27,34 @@ function SignUp() {
 
   // ====================>
 
-  // message d'alerte
-  const [alerte, setAlerte] = useState({
-    message: null,
-    display: false,
-    success: true,
+  // GESTION DE LA FENETRE D'ALERTE
+  const queryClient = useQueryClient();
+  const alerteEmail = useMutation("Alerte", alerteErrorFormEmail, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("Alerte");
+    },
   });
 
-  const provideAlerte = (message, display, success) => {
-    setAlerte({ message, display, success });
+  const alerteUsername = useMutation("Alerte", alerteErrorFormUsername, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("Alerte");
+    },
+  });
 
-    setTimeout(function () {
-      setAlerte({ ...alerte, message, display: false });
-    }, 4000);
-  };
+  const alerteValidation = useMutation(
+    "Alerte",
+    alerteValidationCreateAccount,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("Alerte");
+      },
+    }
+  );
+
+  // ==============================================>
 
   // collecte et envoie des form
-
-  // =================================>
-  const [validation, setValidation] = useState(true);
-
-  const [username, setUsername] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [confirmPassword, setConfirmPassword] = useState(null);
-  // ==================================>
-
-  // react hook form
+  // react hook form config
   const {
     register,
     handleSubmit,
@@ -52,6 +63,19 @@ function SignUp() {
     formState: { errors },
   } = useForm();
 
+  // =================================>
+
+  // verification des données collectées des inputs
+  const [username, setUsername] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [confirmPassword, setConfirmPassword] = useState(null);
+  // ==================================>
+
+  //
+  const [validation, setValidation] = useState(true);
+
+  // soumission du form
   const onSubmit = (data) => {
     setValidation(true);
     console.log(data);
@@ -59,7 +83,6 @@ function SignUp() {
       username: data.username,
       email: data.email,
       password: data.password,
-      confirmPassword: data.confirmPassword,
     };
     console.log(infos);
 
@@ -70,11 +93,16 @@ function SignUp() {
           infos
         );
         console.log(response.data);
-        provideAlerte(
-          "Votre compte à bien été créé, Bienvenue dans l'équipe !",
-          true,
-          true
-        );
+
+        const { token } = response.data;
+        await Cookies.set("userToken", token, { expires: 30 });
+
+        // provideAlerte(
+        //   "Votre compte à bien été créé, Bienvenue dans l'équipe !",
+        //   true,
+        //   true
+        // );
+        alerteValidation.mutate();
       } catch (error) {
         console.log(error.response);
         if (error.response.data === "This email already has an account") {
@@ -83,22 +111,25 @@ function SignUp() {
             { message: "should change email" },
             { shouldFocus: true }
           );
-          return provideAlerte(
-            "Cet email dispose déja d'un compte",
-            true,
-            false
-          );
+          return alerteEmail.mutate("Cet email dispose déjà d'un compte");
+          // provideAlerte(
+          //   "Cet email dispose déja d'un compte",
+          //   true,
+          //   false
+          // );
         } else if (error.response.data === "Username already taken") {
           setError(
             "username",
             { message: "should change username" },
             { shouldFocus: true }
           );
-          return provideAlerte(
-            "Ce nom d'utilisateur est déja pris",
-            true,
-            false
-          );
+          return alerteUsername.mutate();
+
+          // provideAlerte(
+          //   "Ce nom d'utilisateur est déja pris",
+          //   true,
+          //   false
+          // );
         }
       }
     };
@@ -136,22 +167,21 @@ function SignUp() {
   const parseEmail = (value) => {
     let result = _.trim(value, " ");
     result = _.replace(result, " ", "");
-    // console.log(result);
     return result;
   };
 
   return (
-    <div className=" relative font-Dosis overflow-hidden">
-      <section className="bg-black bg-opacity-70 w-4/6 relative m-auto mt-10 rounded-lg flex flex-col items-center ">
+    <div className=" relative font-Dosis h-full flex justify-center items-center ">
+      <section className="bg-black bg-opacity-70 w-4/6 relative rounded-lg flex flex-col items-center my-12 h-5/6 ">
         <h1 className="text-2xl text-green-200 font-bold py-10">
           Rejoins la communauté en créant ton compte dès maintenant
         </h1>
         <form
-          className=" flex flex-col justify-center items-center h-full w-5/6 text-green-100 "
+          className=" flex flex-col justify-center items-center h-full w-5/6 text-green-300 "
           onSubmit={handleSubmit(onSubmit, onError)}
         >
           <section className=" flex flex-col w-full ">
-            <p className="w-2/6">Nom d'utilisateur</p>
+            <p className="w-2/6 underline ">Nom d'utilisateur</p>
             <input
               className={!errors.username ? inputStyle : noValidInputStyle}
               placeholder="Ton nom d'utilisateur"
@@ -180,22 +210,16 @@ function SignUp() {
           </span>
 
           <section className=" flex flex-col w-full ">
-            <p className="w-2/6">E-mail</p>
+            <p className="w-2/6 underline ">E-mail</p>
             <input
               className={!errors.email ? inputStyle : noValidInputStyle}
               placeholder="Ton adresse email"
               {...register("email", {
                 required: "Ce champs est requis",
                 pattern: /[@]/g,
-                // setValueAs: (value) => {
-                //   parseEmail(value);
-                //   setEmail(value);
-                // },
                 validate: (value) => {
                   value = parseEmail(value);
-                  console.log("on vient de parser");
                   setEmail(value);
-                  console.log(email);
                 },
               })}
             />
@@ -215,7 +239,7 @@ function SignUp() {
           </span>
 
           <section className=" flex flex-col w-full ">
-            <p className="w-2/6">Mot de passe</p>
+            <p className="w-2/6 underline">Mot de passe</p>
             <input
               className={!errors.password ? inputStyle : noValidInputStyle}
               placeholder="Ton mot de passe "
@@ -245,7 +269,7 @@ function SignUp() {
           </span>
 
           <section className=" flex flex-col w-full ">
-            <p className="w-2/6">Confirmer mot de passe</p>
+            <p className="w-2/6 underline">Confirmer mot de passe</p>
             <input
               className={
                 !errors.confirmPassword ? inputStyle : noValidInputStyle
@@ -280,7 +304,7 @@ function SignUp() {
               : validate}
           </span>
 
-          <button className=" p-2 px-3 rounded-full bg-green-500 bg-opacity-80 text-white font-bold transform hover:scale-105 active:bg-green-800">
+          <button className=" p-2 px-3 rounded-full bg-green-500 bg-opacity-80 text-white font-bold transform hover:scale-105 active:bg-green-800 focus:outline-none">
             Valider{" "}
           </button>
         </form>
@@ -300,16 +324,14 @@ function SignUp() {
         </section>
       </section>
       <section
-        className={
-          alerte.display
-            ? alerte.success
-              ? " transition-all duration-1000 absolute bottom-1 right-5 bg-green-200 bg-opacity-100 rounded p-10 ease-in-out"
-              : " transition-all duration-1000 absolute bottom-1 right-5 bg-yellow-200 bg-opacity-100 rounded p-10 ease-in-out  "
-            : " transition-all duration-1000 absolute bottom-1 right-5 bg-green-200 bg-opacity-50 rounded p-10 opacity-0 ease-in-out "
-        }
-      >
-        {alerte.message}
-      </section>
+      // className={
+      //   alerte.display
+      //     ? alerte.success
+      //       ? " transition-all duration-1000 absolute bottom-1 right-5 bg-green-200 bg-opacity-100 rounded p-10 ease-in-out"
+      //       : " transition-all duration-1000 absolute bottom-1 right-5 bg-yellow-200 bg-opacity-100 rounded p-10 ease-in-out  "
+      //     : " transition-all duration-1000 absolute bottom-1 right-5 bg-green-200 bg-opacity-50 rounded p-10 opacity-0 ease-in-out "
+      // }
+      ></section>
     </div>
   );
 }

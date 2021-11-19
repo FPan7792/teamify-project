@@ -82,13 +82,7 @@ export const removeFromMyTeam = (player) => {
       parse = _.replace(player.value, " K €", "");
     }
 
-    // console.log("Je suis parse etape 1");
-    // console.log(parse);
-
     parse = _.replace(parse, ",", ".");
-
-    // console.log("je suis parse etape 2");
-    // console.log(parse);
 
     if (_.endsWith(player.value, "mio. €")) {
       return Number(parse) * 1000000;
@@ -98,15 +92,48 @@ export const removeFromMyTeam = (player) => {
   }
   const value = parseValue();
 
-  console.log("c'esr value");
   console.log(value);
 
-  console.log("cest valeur de myteam");
   console.log(myTeam.valeur);
 
   myTeam.valeur -= value;
 
-  console.log("ca c'est lyream");
   console.log(myTeam);
   return myTeam;
+};
+
+// Set le message d'alerte
+
+let alerte = { message: null, display: false, success: true };
+export const displayAlerte = () => {
+  return alerte;
+};
+
+export const alerteValidationCreateAccount = () => {
+  alerte.message = "Votre compte à bien été créé. Bienvenue dans l'équipe !";
+  alerte.display = true;
+  alerte.success = true;
+
+  return alerte;
+};
+
+export const alerteErrorFormEmail = (message) => {
+  alerte.message = message;
+  alerte.display = true;
+  alerte.success = false;
+
+  return alerte;
+};
+
+export const alerteErrorFormUsername = () => {
+  alerte.message = "Ce nom d'utilisateur est déja utilisé";
+  alerte.display = true;
+  alerte.success = false;
+
+  return alerte;
+};
+
+export const resetAlerte = () => {
+  alerte.display = false;
+  return alerte;
 };

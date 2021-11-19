@@ -15,18 +15,18 @@ const Header = () => {
   const [displayMenu, setDisplayMenu] = useState(true);
 
   return (
-    <nav className="relative shadow-md bg-black bg-opacity-40 flex justify-between items-center w-full rounded p-3">
+    <nav className=" shadow-md bg-black bg-opacity-40 flex justify-between items-center w-full rounded p-3">
       <Link to="/">
-        <section className="flex justify-center items-center">
-          <p className="inline-block bg-green-100 bg-opacity-90 rounded-full h-full p-2 ">
+        <section className="flex justify-center items-center cursor-pointer">
+          <span className="inline-block bg-green-100 bg-opacity-90 rounded-full p-2 ">
             <img
               className="inline-block "
               src={logo}
               alt="teamify-logo"
               width="50"
             />
-          </p>
-          <span className=" font-Dosis m-2 font-sans font-bold text-3xl text-green-100 inline-block ">
+          </span>
+          <span className=" font-Dosis ml-2 font-sans font-bold text-3xl text-green-100 inline-block ">
             TEAMIFY
           </span>
         </section>
@@ -51,7 +51,7 @@ const Header = () => {
                 className={
                   displayMenu
                     ? " transition-all opacity-100 duration-500 bg-green-500 bg-opacity-30 px-2 rounded-lg hover:bg-white hover:bg-opacity-80 hover:text-green-700 cursor-pointer"
-                    : " transition-all opacity-0 duration-500 ease-in-out px-2 rounded-lg "
+                    : " transition-all opacity-0 duration-500 ease-in-out px-2 rounded-lg  "
                 }
               >
                 Rejoindre la communauté

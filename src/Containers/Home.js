@@ -17,12 +17,12 @@ import Ligue1Card from "../Components/LeagueCards/Ligue1Card";
 // import PrimeiraDivisionCard from "../Components/LeagueCards/PrimeiraDivisionCard";
 // import SerieACard from "../Components/LeagueCards/SerieACard";
 
-// barre de recherche 
+// barre de recherche
 import SearchBar from "../Components/SearchBar";
 
 // --------------------------->
 
-// states et icones 
+// states et icones
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -30,7 +30,6 @@ import {
   faAngleDoubleUp,
 } from "@fortawesome/free-solid-svg-icons";
 // ----------------------------->
-
 
 const Home = () => {
   // requetes des leagues dans le json stocké en local
@@ -81,8 +80,8 @@ const Home = () => {
   // si c'est true, on change les props du composant pour afficher la transition
 
   return (
-    <div className="flex-1 flex items-center flex-col py-5 rounded-2xl my-5 ml-2 relative border-solid p-7 h-screen ">
-      <section className=" font-Dosis p-10 flex flex-col items-center w-full h-5/6 bg-black bg-opacity-50 rounded-xl ">
+    <div className="flex-1 flex items-center flex-col rounded-2xl my-5 relative p-7 h-full ">
+      <section className=" font-Dosis p-10 flex flex-col items-center w-full h-54 bg-black bg-opacity-50 rounded-xl ">
         <h1 className="font-bold text-2xl">
           Bienvenue dans l'univers de
           <span className="text-green-100"> TEAMIFY</span>
@@ -222,5 +221,5 @@ export default Home;
 
 // SECTION WIP
 
-// Implementer le composant leagues dans les props 
+// Implementer le composant leagues dans les props
 // structure + CSS composant ligues (afficher equipes, joueurs)
