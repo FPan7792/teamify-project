@@ -16,15 +16,19 @@ _Search the player by name and integrate him into your team_
 
 _Have a view on your team value and manage the players your want in your team_
 
+_Create an account and LogIn_
+
 **FEATURES COMING SOON**
 
-_Create an account, log in and save your teams into DTB_
+_Save your teams into DTB_
 
 _Find a team among the 6 big europeans soccer leagues_
 
 _Search and find a player by team_
 
 _Set a maximum amount for your team a control your mercato goals_
+
+_Some cool features about players and teams design_
 
 **USED TECHNOLOGIES**
 
@@ -41,10 +45,11 @@ _Set a maximum amount for your team a control your mercato goals_
   - _Lodash_
   - _React-Router-Dom_ (_v5_)
   - _React-Hook-Form_
+  - _Js-Cookie_
 
 **_This project is running with yarn (package manager)_**
 
-To run the project on your own machine do :
+**_To run the project on your own machine do :_**
 
 ```javascript
 npm install -y

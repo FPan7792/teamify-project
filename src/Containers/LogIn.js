@@ -113,8 +113,8 @@ function LogIn() {
   // ==============================>
 
   return (
-    <div className=" relative font-Dosis h-screen flex justify-center items-center -mt-12 ">
-      <section className="bg-black bg-opacity-70 w-4/6 relative rounded-lg flex flex-col items-center ">
+    <div className=" relative font-Dosis h-screen flex justify-center items-center ">
+      <section className="bg-black bg-opacity-70 w-4/6 relative rounded-lg flex flex-col items-center -mt-20 ">
         <h1 className="text-2xl text-green-200 font-bold py-20">
           Connectes-toi pour retrouver tes équipes !
         </h1>

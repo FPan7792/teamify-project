@@ -12,11 +12,11 @@ import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const SearchBar = () => {
   const [search, setSearch] = useState("");
-  const [playerFetched, setPlayerFetched] = useState();
+  const [playerFetched, setPlayerFetched] = useState(null);
 
   // afficher un message à l'utlisateur en cas d'erreur
   const [alert, setAlert] = useState({
-    message: "",
+    message: null,
     success: null,
     display: false,
   });
@@ -41,12 +41,17 @@ const SearchBar = () => {
   const AddPlayer = useMutation("MyTeam", AddPlayerToMyTeam, {
     onSuccess: () => {
       queryClient.invalidateQueries("MyTeam");
-      provideAlert(
-        `Félicitation ! ${playerFetched.name} vient de rejoindre ton équipe !`,
-        "OK"
-      );
     },
   });
+
+  // valider l'ajout de joueurs a l'equipe
+  const addPlayerValidation = () => {
+    AddPlayer.mutate(playerFetched);
+    provideAlert(
+      `Félicitation ! ${playerFetched.name} vient de rejoindre ton équipe !`,
+      "OK"
+    );
+  };
 
   // TRUE de base. on set a FALSE si le joueur est deja dans l'équipe pour empecher l'ajout
   const [validAddPlayers, setValidAddPlayers] = useState(true);
@@ -70,21 +75,28 @@ const SearchBar = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetch = async () => {
+    // Activation de l'icone de charge
     setIsLoading(true);
 
-    const response = await fetchTransfertInfos(search);
-    console.log(response);
+    try {
+      // on lance une recherche vers le back avec les données de search (entrée dans la barre de recherche )
+      const response = await fetchTransfertInfos(search);
 
-    // retourne false si le joueur est deja dans l'équipe
-    const valid = await checkAndAdd(response.name);
-
-    if (!valid) {
-      setValidAddPlayers(false);
+      // retourne false si le joueur est deja dans l'équipe
+      if (response === "400" || response === "404") {
+        provideAlert("Aucun joueur ne correspond à ta recherche 🥺", "NO");
+      } else {
+        setPlayerFetched(response);
+        const valid = await checkAndAdd(response.name);
+        if (!valid) {
+          await setValidAddPlayers(false);
+        } else setPlayerFetched(response);
+      }
+    } catch (error) {
+      console.log(error.response);
     }
 
-    // on envoie les données de transfert dans PlayerFetched
-    setPlayerFetched(response);
-
+    // Desactivation de l'icone de charge
     setIsLoading(false);
   };
 
@@ -129,18 +141,20 @@ const SearchBar = () => {
       <section
         className={
           playerFetched || alert.display
-            ? " opacity-100 transition-all duration-1000 shadow p-5 bg-black bg-opacity-80 rounded-md w-3/5 flex justify-center items-center flex-col "
-            : " opacity-0 transition-all duration-500 shadow p-5 bg-white bg-opacity-30 rounded-md w-3/5 flex justify-center items-center flex-col"
+            ? " opacity-100 transition-all duration-500 ease-in-out shadow p-5 bg-black bg-opacity-80 rounded-md w-3/5 flex justify-center items-center flex-col "
+            : " opacity-0 transition-all duration-500 ease-in shadow p-5 bg-white bg-opacity-30 rounded-md w-3/5 flex justify-center items-center flex-col"
         }
       >
-        <p>
+        <div>
           <section
             className={
               alert.success === "OK"
-                ? " transition-all duration-500 border-green-500 border-2 flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-green-100 "
+                ? " transition-all duration-500 border-green-500 border-2 flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-green-100 m-5 "
                 : alert.success === "NO"
-                ? " transition-all duration-500 border-red-500 border-2 flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-red-100 "
-                : " transition-all duration-500 flex items-center justify-center flex-col p-4 bg-opacity-80 bg-white rounded-xl "
+                ? " transition-all duration-500 border-red-500 border-2 flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-red-100 m-5 "
+                : playerFetched
+                ? " transition-all duration-500 flex items-center justify-center flex-col p-4 opacity-100 bg-white m-5 rounded-xl border-white border-2 border-solid "
+                : " transition-all duration-500 flex items-center justify-center flex-col p-4 opacity-0 bg-white m-5 rounded-xl border-white border-2 border-solid "
             }
           >
             {playerFetched ? (
@@ -149,20 +163,23 @@ const SearchBar = () => {
                 <p className="italic text-green-700 ">{playerFetched.value}</p>
               </>
             ) : (
-              <p
-                className={
-                  alert.success === "NO"
-                    ? " transition-all duration-500 font-bold font-Dosis italic text-red-500 opacity-100 "
-                    : alert.success === "OK"
-                    ? " transition-all duration-500 font-bold font-Dosis italic text-green-700 opacity-100"
-                    : " transition-all duration-500 font-bold font-Dosis "
-                }
-              >
-                {alert.message}
-              </p>
+              alert.message && (
+                <p
+                  className={
+                    alert.success === "NO"
+                      ? " transition-all duration-500 font-bold font-Dosis italic text-red-500 opacity-100 text-center "
+                      : alert.success === "OK"
+                      ? " transition-all duration-500 font-bold font-Dosis italic text-green-700 opacity-100 text-center"
+                      : !alert.success &&
+                        " transition-all duration-500 font-bold font-Dosis italic text-yellow-400 text-center"
+                  }
+                >
+                  {alert.message}
+                </p>
+              )
             )}
           </section>
-        </p>
+        </div>
 
         <section
           className={
@@ -175,10 +192,11 @@ const SearchBar = () => {
             className="active:bg-green-900 active:text-white active:scale-105 inline-block my-2 text-green-700 hover:text-green-900 h-full bg-green-100 hover:bg-green-200 hover:shadow-lg text-center rounded-xl shadow px-3 font-bold transform hover:scale-105 "
             onClick={async () => {
               console.log(playerFetched);
-              playerFetched !== 404 && (await validAddPlayers)
-                ? AddPlayer.mutate(playerFetched)
-                : provideAlert("Ce joueur est déja dans ton effectif !", "NO");
-
+              playerFetched
+                ? validAddPlayers
+                  ? addPlayerValidation()
+                  : provideAlert("Ce joueur est déja dans ton effectif !", "NO")
+                : console.log("NOTHING  TO ADD ");
               // on vide l'input, la variable JOUEUR et on permet de nouveau l'ajout
               setPlayerFetched();
               setSearch("");
@@ -195,6 +213,7 @@ const SearchBar = () => {
           <button
             className="bg-red-600 bg-opacity-60 text-white font-bold rounded-full px-2 transform hover:scale-105 h-7 hover:bg-red-700 "
             onClick={() => {
+              provideAlert("Abandon du contrat", null);
               setPlayerFetched();
               setSearch("");
               setValidAddPlayers(true);
