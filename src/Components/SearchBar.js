@@ -26,7 +26,7 @@ const SearchBar = () => {
 
     setTimeout(
       () => setAlert({ message, success: null, display: false }),
-      3000
+      2000
     );
   };
 
@@ -74,27 +74,40 @@ const SearchBar = () => {
   // fonction envoie la valeur de l'input (nom d'un joueur) et retourne les données tranferts
   const [isLoading, setIsLoading] = useState(false);
 
+  const giveUpContracts = () => {
+    provideAlert("Abandon du contrat", null);
+    setPlayerFetched(null);
+    setSearch("");
+    setValidAddPlayers(true);
+  };
+
   const fetch = async () => {
+    if (playerFetched) {
+      giveUpContracts();
+    }
+
     // Activation de l'icone de charge
     setIsLoading(true);
 
-    try {
-      // on lance une recherche vers le back avec les données de search (entrée dans la barre de recherche )
-      const response = await fetchTransfertInfos(search);
+    if (search !== "") {
+      try {
+        // on lance une recherche vers le back avec les données de search (entrée dans la barre de recherche )
+        const response = await fetchTransfertInfos(search);
 
-      // retourne false si le joueur est deja dans l'équipe
-      if (response === "400" || response === "404") {
-        provideAlert("Aucun joueur ne correspond à ta recherche 🥺", "NO");
-      } else {
-        setPlayerFetched(response);
-        const valid = await checkAndAdd(response.name);
-        if (!valid) {
-          await setValidAddPlayers(false);
-        } else setPlayerFetched(response);
+        // retourne false si le joueur est deja dans l'équipe
+        if (response === "400" || response === "404") {
+          provideAlert("Aucun joueur ne correspond à ta recherche 🥺", "NO");
+        } else {
+          setPlayerFetched(response);
+          const valid = await checkAndAdd(response.name);
+          if (!valid) {
+            await setValidAddPlayers(false);
+          } else setPlayerFetched(response);
+        }
+      } catch (error) {
+        console.log(error.response);
       }
-    } catch (error) {
-      console.log(error.response);
-    }
+    } else provideAlert("Tu peux entrer le nom de ton joueur", "NO");
 
     // Desactivation de l'icone de charge
     setIsLoading(false);
@@ -130,7 +143,7 @@ const SearchBar = () => {
           }}
         />
         <button
-          className=" active:bg-green-700 active:scale-105 inline-block rounded-full bg-green-400 transform -translate-x-11 w-12 h-12 cursor-pointer  "
+          className=" active:bg-green-700 active:scale-105 inline-block rounded-full bg-opacity-50 shadow-md bg-green-500 xl:bg-opacity-100 hover:scale-110 transform translate-x-2 xl:-translate-x-11 w-12 h-12 cursor-pointer  "
           onClick={() => {
             fetch();
           }}
@@ -140,8 +153,10 @@ const SearchBar = () => {
       </div>
       <section
         className={
-          playerFetched || alert.display
-            ? " opacity-100 transition-all duration-500 ease-in-out shadow p-5 bg-black bg-opacity-80 rounded-md w-3/5 flex justify-center items-center flex-col "
+          alert.display && search == ""
+            ? " transition-all duration-500 ease-in-out bg-red-500 bg-opacity-10 p-5 rounded-2xl w-3/5 flex justify-center items-center flex-col"
+            : playerFetched || alert.display
+            ? " opacity-100 transition-all duration-500 ease-in-out p-5 shadow-md bg-opacity-50 bg-white rounded-2xl w-3/5 flex justify-center items-center flex-col "
             : " opacity-0 transition-all duration-500 ease-in shadow p-5 bg-white bg-opacity-30 rounded-md w-3/5 flex justify-center items-center flex-col"
         }
       >
@@ -149,9 +164,9 @@ const SearchBar = () => {
           <section
             className={
               alert.success === "OK"
-                ? " transition-all duration-500 border-green-500 border-2 flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-green-100 m-5 "
+                ? " transition-all duration-500 flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-green-100 m-5 "
                 : alert.success === "NO"
-                ? " transition-all duration-500 border-red-500 border-2 flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-red-100 m-5 "
+                ? " transition-all duration-500  flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-red-100 m-5 "
                 : playerFetched
                 ? " transition-all duration-500 flex items-center justify-center flex-col p-4 opacity-100 bg-white m-5 rounded-xl border-white border-2 border-solid "
                 : " transition-all duration-500 flex items-center justify-center flex-col p-4 opacity-0 bg-white m-5 rounded-xl border-white border-2 border-solid "
@@ -211,12 +226,9 @@ const SearchBar = () => {
             }{" "}
           </button>
           <button
-            className="bg-red-600 bg-opacity-60 text-white font-bold rounded-full px-2 transform hover:scale-105 h-7 hover:bg-red-700 "
+            className="bg-red-600 text-white font-bold rounded-full px-2 transform hover:scale-105 h-7 hover:bg-red-700 "
             onClick={() => {
-              provideAlert("Abandon du contrat", null);
-              setPlayerFetched();
-              setSearch("");
-              setValidAddPlayers(true);
+              giveUpContracts();
             }}
           >
             Annuler
@@ -228,3 +240,5 @@ const SearchBar = () => {
 };
 
 export default SearchBar;
+
+// PROBLEME LORSQUE JE REFETCH SUR UN JOUEUR DEJA FECTH

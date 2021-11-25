@@ -102,7 +102,28 @@ export const removeFromMyTeam = (player) => {
   return myTeam;
 };
 
-// Set le message d'alerte
+export const saveMyTeams = async () => {
+  const value = {
+    number_of_teams: 1,
+    teams: myTeam,
+  };
+
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:3001/user/myteams/create",
+      value
+    );
+
+    console.log(response.data);
+    if (response.status === 200) return console.log("SUCCESS");
+  } catch (error) {
+    return console.log(error.response);
+  }
+};
+
+// ============================================>
+// GESTIONS DES MESSAGES D'ALERTE EN GLOBAL
+// ============================================>
 
 let alerte = { message: null, display: false, success: true };
 export const displayAlerte = () => {
@@ -137,3 +158,7 @@ export const resetAlerte = () => {
   alerte.display = false;
   return alerte;
 };
+
+// ============================================>
+// ----------------------------------------------
+// ============================================>

@@ -63,7 +63,7 @@ function App() {
     <Router>
       <div className="relative h-full bg-main-bg bg-center bg-cover bg-no-repeat ">
         {/* <section className=" rounded absolute top-0 bg-main-bg bg-center bg-no-repeat h-screen w-full bg-cover"></section> */}
-        <div className="h-full">
+        <div className="h-full pt-2 xl:pt-0 ">
           <Header />
           <Switch>
             <Route path="/login">
@@ -73,7 +73,7 @@ function App() {
               <SignUp />
             </Route>
             <Route path="/">
-              {/* <section className="rounded-xl absolute top-full  bg-opacity-50 bg-terrain bg-center bg-no-repeat h-screen w-11/12 bg-cover "></section> */}
+              {/* <section className="rounded-xl absolute top-full bg-opacity-50 bg-terrain bg-center bg-no-repeat h-screen w-11/12 bg-cover "></section> */}
               <Main />
             </Route>
           </Switch>

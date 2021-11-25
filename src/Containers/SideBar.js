@@ -1,5 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { displayMyTeam, removeFromMyTeam } from "../Requests/requests";
+import {
+  displayMyTeam,
+  removeFromMyTeam,
+  saveMyTeams,
+} from "../Requests/requests";
 
 const SideBar = () => {
   const fetchMyTeam = useQuery("MyTeam", displayMyTeam, {
@@ -48,8 +52,12 @@ const SideBar = () => {
     },
   });
 
+  // enregistrer mes équipes
+
+  const Save = () => useQuery("MyTeam", saveMyTeams);
+
   return (
-    <div className=" border-black flex-initial shadow-md h-full m-3 p-5 bg-white bg-opacity-80 rounded sticky top-10 font-Dosis">
+    <div className=" border-black flex-initial shadow-md h-full m-3 p-5 bg-white bg-opacity-80 rounded sticky top-10 font-Dosis flex justify-center items-center flex-col">
       <p className=" text-green-700 text-xl  text-center mx-8">
         Budget engagé : <br />
         {isSuccess && (
@@ -84,6 +92,14 @@ const SideBar = () => {
             </section>
           );
         })}
+      <button
+        className="rounded-2xl bg-yellow-600 px-2"
+        onClick={() => {
+          saveMyTeams();
+        }}
+      >
+        Save my team
+      </button>
     </div>
   );
 };
