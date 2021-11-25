@@ -154,7 +154,7 @@ const SearchBar = () => {
       <section
         className={
           alert.display && search == ""
-            ? " transition-all duration-500 ease-in-out bg-red-500 bg-opacity-10 p-5 rounded-2xl w-3/5 flex justify-center items-center flex-col"
+            ? " transition-all duration-500 ease-in-out p-5 rounded-2xl w-3/5 flex justify-center items-center flex-col"
             : playerFetched || alert.display
             ? " opacity-100 transition-all duration-500 ease-in-out p-5 shadow-md bg-opacity-50 bg-white rounded-2xl w-3/5 flex justify-center items-center flex-col "
             : " opacity-0 transition-all duration-500 ease-in shadow p-5 bg-white bg-opacity-30 rounded-md w-3/5 flex justify-center items-center flex-col"
