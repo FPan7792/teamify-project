@@ -7,41 +7,54 @@ import Main from "./Containers/Main";
 import LogIn from "./Containers/LogIn";
 import SignUp from "./Containers/SignUp";
 import Welcome from "./Components/Welcome";
-
-// cookies de première connexion
-import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
 
-// gestions de la fenetre d'alerte
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import { resetAlerte } from "./Requests/requests";
+// GESTION DES COOKIES
+import Cookies from "js-cookie";
+import { getUserToken } from "./Requests/user";
 
-// import des icones
+// GESTION DE LA FENETRE D'ALERTE
+// ================================>
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { resetAlerte, displayAlerte } from "./Requests/alerts";
+// ================================>
+
+// import des icones FONT AWESOME
+// ================================>
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faAngleDown,
   faSearch,
   faAngleDoubleDown,
 } from "@fortawesome/free-solid-svg-icons";
-import { displayAlerte } from "./Requests/requests";
 library.add(faAngleDown, faSearch, faAngleDoubleDown);
+// ================================>
 
 function App() {
-  // Message de bienvenue à la premiere connexion
+  // Modale à la premiere connexion (INFOS MAJ & WELCOME)
   const [welcome, setWelcome] = useState({ vital: false, display: false });
 
   // GESTION DE LA FENETRE D'ALERTE
+  // fecth alert
   const alerte = useQuery("Alerte", displayAlerte);
+  // stocker alerte
   const { data } = alerte;
-  console.log(alerte);
-  // const [message, setMessage] = useState();
+  // mettre a jour alerte
   const queryClient = useQueryClient();
   const alerteReset = useMutation("Alerte", resetAlerte, {
     onSuccess: () => {
       queryClient.invalidateQueries("Alerte");
     },
   });
+  // faire disparaitre la fenetre d'alerte apres delai
+  useEffect(() => {
+    if (data?.display) {
+      setTimeout(() => alerteReset.mutate(), 4000);
+    }
+  });
 
+  // GESTION DE LA MODALE D'INFORMATION
+  // ========================================>
   useEffect(() => {
     if (!Cookies.get("teamify")) {
       setWelcome({ vital: true, display: false });
@@ -53,11 +66,10 @@ function App() {
   }, []);
   // ========================================>
 
-  useEffect(() => {
-    if (data?.display) {
-      setTimeout(() => alerteReset.mutate(), 4000);
-    }
-  });
+  // Gestion DE LA CONNEXION DU USER
+  const userToken = useQuery("USERTOKEN", getUserToken);
+  console.log("UT");
+  console.log(userToken.data);
 
   return (
     <Router>

@@ -8,7 +8,7 @@ const Main = () => {
     " flex-initial shadow-md h-full m-3 p-5 bg-white bg-opacity-80 rounded sticky top-10 font-Dosis justify-center items-center flex-col hidden xl:flex";
 
   return (
-    <div className=" xl:flex relative h-full ">
+    <div className=" xl:flex relative h-full px-5 ">
       <div>
         <SideBar globalAppearence={sideBarMobileDesign} />
       </div>

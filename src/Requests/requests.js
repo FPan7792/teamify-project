@@ -28,15 +28,9 @@ export const displayMyTeam = () => {
 export const AddPlayerToMyTeam = (player) => {
   myTeam.equipe.push(player);
 
-  // console.log("je syus add ");
-  // console.log(player.value);
-
   if (player.value === "-") {
     player.value = "0";
   }
-
-  // console.log("je suis player.value apres traitement ");
-  // console.log(player.value);
 
   const value = player.value.split("");
 
@@ -102,63 +96,24 @@ export const removeFromMyTeam = (player) => {
   return myTeam;
 };
 
-export const saveMyTeams = async () => {
+export const saveMyTeams = async (number_of_teams, owner) => {
   const value = {
-    number_of_teams: 1,
+    number_of_teams,
     teams: myTeam,
+    owner,
   };
 
-  try {
-    const response = await axios.post(
-      "http://127.0.0.1:3001/user/myteams/create",
-      value
-    );
+  if (owner) {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:3001/user/myteams/create",
+        value
+      );
 
-    console.log(response.data);
-    if (response.status === 200) return console.log("SUCCESS");
-  } catch (error) {
-    return console.log(error.response);
-  }
+      console.log(response.data);
+      if (response.status === 200) return console.log("SUCCESS");
+    } catch (error) {
+      return console.log(error.response);
+    }
+  } else console.log("Pas d'identifiant. Requis");
 };
-
-// ============================================>
-// GESTIONS DES MESSAGES D'ALERTE EN GLOBAL
-// ============================================>
-
-let alerte = { message: null, display: false, success: true };
-export const displayAlerte = () => {
-  return alerte;
-};
-
-export const alerteValidationCreateAccount = () => {
-  alerte.message = "Votre compte à bien été créé. Bienvenue dans l'équipe !";
-  alerte.display = true;
-  alerte.success = true;
-
-  return alerte;
-};
-
-export const alerteErrorFormEmail = (message) => {
-  alerte.message = message;
-  alerte.display = true;
-  alerte.success = false;
-
-  return alerte;
-};
-
-export const alerteErrorFormUsername = () => {
-  alerte.message = "Ce nom d'utilisateur est déja utilisé";
-  alerte.display = true;
-  alerte.success = false;
-
-  return alerte;
-};
-
-export const resetAlerte = () => {
-  alerte.display = false;
-  return alerte;
-};
-
-// ============================================>
-// ----------------------------------------------
-// ============================================>

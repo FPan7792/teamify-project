@@ -128,7 +128,7 @@ const SearchBar = () => {
         />
 
         <input
-          className=" focus:outline-none focus:shadow h-12 text-center text-white rounded-3xl my-7 w-4/5 shadow-xl bg-black bg-opacity-75"
+          className=" focus:outline-none focus:bg-opacity-100 h-12 text-center text-white rounded-3xl my-7 w-4/5 shadow-xl bg-black bg-opacity-75"
           type="text"
           placeholder="Tape le nom du joueur que tu recherches "
           name="search"

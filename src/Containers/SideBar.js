@@ -68,9 +68,8 @@ const SideBar = ({ globalAppearence }) => {
           )}
         </p>
       </section>
-      <section className=" w-11/12 flex xl:flex-col overflow-x-scroll my-3 p-2 bg-white bg-opacity-100 rounded-2xl ">
-        {isSuccess &&
-          data.equipe &&
+      <section className=" w-11/12 flex xl:flex-col overflow-x-scroll xl:overflow-y-scroll xl:h-96 my-3 p-2 bg-white bg-opacity-100  rounded-2xl ">
+        {isSuccess && data?.equipe?.length > 0 ? (
           data.equipe.map((player, index) => {
             return (
               <section
@@ -94,16 +93,24 @@ const SideBar = ({ globalAppearence }) => {
                 </button>
               </section>
             );
-          })}
+          })
+        ) : (
+          <p className=" m-auto italic opacity-50 text-red-700 text-center ">
+            Aucun joueur dans l'équipe
+          </p>
+        )}
       </section>
 
       <button
-        className="rounded-2xl bg-yellow-600 px-2"
+        className="rounded-2xl bg-yellow-400 px-2"
         onClick={() => {
-          saveMyTeams();
+          saveMyTeams(1);
         }}
       >
-        Save my team
+        Sauvegarder cette équipe
+      </button>
+      <button className="rounded-2xl bg-gray-400 px-2 mt-2 border-white border-2">
+        Voir toutes mes équipes
       </button>
     </div>
   );
@@ -112,3 +119,4 @@ const SideBar = ({ globalAppearence }) => {
 export default SideBar;
 
 // Mettre en place système de limitation de prix
+// AJOUTER A LA SAUVEGARDE UNE PROPS DE POSTE POUR LE JOUEUR : mise en place des ROLES
