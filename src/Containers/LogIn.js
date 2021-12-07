@@ -44,9 +44,10 @@ function LogIn() {
   // GESTION DU USERTOKEN
   // ====================>
 
-  const setTokenForUserConnexion = useMutation("USERTOKEN", setUserToken, {
+  const setTokenForUserConnexion = useMutation("USER", setUserToken, {
     onSuccess: () => {
-      queryClient.invalidateQueries("USERTOKEN");
+      queryClient.invalidateQueries("USER");
+      queryClient.invalidateQueries("USERTEAMS");
     },
   });
 
@@ -81,9 +82,10 @@ function LogIn() {
         );
         console.log(response.data);
 
-        const { token } = response.data;
+        const { token, username } = response.data;
         await Cookies.set("userToken", token);
-        await setTokenForUserConnexion.mutate(token);
+        await Cookies.set("userName", username);
+        await setTokenForUserConnexion.mutate(username);
 
         return alerteValidation.mutate();
       } catch (error) {
@@ -158,6 +160,7 @@ function LogIn() {
             <p className="w-2/6 underline ">Mot de passe</p>
             <input
               className={!errors.password ? inputStyle : noValidInputStyle}
+              type="password"
               placeholder="Mot de passe"
               {...register("password", { required: true })}
             />

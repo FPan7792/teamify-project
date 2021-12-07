@@ -13,7 +13,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 // GESTION DE CONNEXION DU USER
 import Cookies from "js-cookie";
-import { getUserToken, removeUserTokenToDefault } from "../Requests/user";
+import { getUser, removeUserTokenToDefault } from "../Requests/user";
 // utlisation de Reactquery
 import { useQuery, useMutation, useQueryClient } from "react-query";
 
@@ -23,14 +23,14 @@ const Header = () => {
   // GESTION DE LA CONNEXION
   const queryClient = useQueryClient();
 
-  const getToken = useQuery("USERTOKEN", getUserToken);
+  const isConnected = useQuery("USER", getUser).data?.connected;
 
   const removeTokenForDisconnection = useMutation(
-    "USERTOKEN",
+    "USER",
     removeUserTokenToDefault,
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("USERTOKEN");
+        queryClient.invalidateQueries("USER");
         console.log("UT REMOVED ... Disconnection");
       },
     }
@@ -68,7 +68,7 @@ const Header = () => {
           <FontAwesomeIcon icon={faBars} />
         </button>
       </section>
-      {!getToken?.data ? (
+      {!isConnected ? (
         <nav
           className={
             displayMenu
@@ -117,7 +117,7 @@ const Header = () => {
 
       <section className=" hidden xl:flex justify-end text-white font-Dosis w-2/6 items-center flex-shrink text-xs lg:text-base ">
         {displayMenu ? (
-          !getToken?.data ? (
+          !isConnected ? (
             <nav className="w-3/5 flex justify-between transition-all duration-1000 ease-in-out h-7 rounded-xl ">
               <Link to="/login">
                 <button

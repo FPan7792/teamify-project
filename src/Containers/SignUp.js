@@ -60,9 +60,9 @@ function SignUp() {
   // GESTION DU USERTOKEN
   // ====================>
 
-  const setTokenForUserConnexion = useMutation("USERTOKEN", setUserToken, {
+  const setTokenForUserConnexion = useMutation("USER", setUserToken, {
     onSuccess: () => {
-      queryClient.invalidateQueries("USERTOKEN");
+      queryClient.invalidateQueries("USER");
     },
   });
 
@@ -109,9 +109,10 @@ function SignUp() {
 
         console.log(response.data);
 
-        const { token } = response.data;
+        const { token, username } = response.data;
         await Cookies.set("userToken", token, { expires: 30 });
-        await setTokenForUserConnexion.mutate(token);
+        await Cookies.set("userName", username);
+        await setTokenForUserConnexion.mutate(username);
 
         alerteValidation.mutate();
       } catch (error) {

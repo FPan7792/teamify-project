@@ -1,21 +1,49 @@
-import { useQuery, useMutation, useQueryClient } from "react-query";
+import { useQueries, useMutation, useQueryClient } from "react-query";
 import {
-  displayMyTeam,
   removeFromMyTeam,
   saveMyTeams,
+  fetchMySavedTeams,
+  updateMyTeams,
+  resetMyTeam,
 } from "../Requests/requests";
 
-const SideBar = ({ globalAppearence }) => {
-  const fetchMyTeam = useQuery("MyTeam", displayMyTeam, {
-    initialData: "MyTeam",
-  });
-  const { isSuccess, data } = fetchMyTeam;
-  // isSuccess && console.log("c'est valeur de data ");
-  // isSuccess && console.log(data);
+// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 
+const SideBar = ({ globalAppearence }) => {
+  // enregistrer mes équipes
+  const isConnected = Cookies.get("userToken") || null;
+
+  // Savoir si une equipe existe déja
+  const [userHasTeamsExisting, setUserHasTeamsExisting] = useState(false);
+
+  const fetchTeams = useQueries([
+    { queryKey: "DEFAULT_TEAM", queryFn: fetchMySavedTeams },
+  ]);
+
+  const { isSuccess, data } = fetchTeams[0];
+
+  useEffect(() => {
+    if (isConnected) {
+      if (data?.equipe?.length > 0) {
+        setUserHasTeamsExisting(true);
+        console.log("existing teams ");
+      }
+
+      return () => {
+        setUserHasTeamsExisting(false);
+        console.log("existing team false");
+      };
+    }
+  }, [isSuccess, data, isConnected]);
+
+  // ======================================================================>
+  // ======================================================================>
+
+  // GESTION DE LAFFICHAGE DES EQUIPES
+  // ============================================>
   const parseValue = (value) => {
-    // console.log("ca c'est value");
-    // console.log(value);
     let result;
     let valueAmount = "";
     if (value !== 0) {
@@ -46,73 +74,98 @@ const SideBar = ({ globalAppearence }) => {
 
   // retirer un joueur de l'équipe
   const queryClient = useQueryClient();
-  const removePlayer = useMutation("MyTeam", removeFromMyTeam, {
+  const removePlayer = useMutation(removeFromMyTeam, {
     onSuccess: () => {
-      queryClient.invalidateQueries("MyTeam");
+      // queryClient.invalidateQueries("MY_TEAM");
+      queryClient.invalidateQueries("DEFAULT_TEAM");
     },
   });
 
-  // enregistrer mes équipes
+  const removeAllPlayers = useMutation(resetMyTeam, {
+    onSuccess: () => {
+      // queryClient.invalidateQueries("MY_TEAM");
+      queryClient.invalidateQueries("DEFAULT_TEAM");
+    },
+  });
 
-  // const Save = () => useQuery("MyTeam", saveMyTeams);
+  // ============================================>
+  // ============================================>
 
   return (
-    <div className={globalAppearence}>
-      <section className="flex-shrink-0">
-        <p className=" text-green-700 text-xl text-center mx-8">
-          Budget engagé : <br />
-          {isSuccess && (
+    isSuccess && (
+      <div className={globalAppearence}>
+        <section className="flex-shrink-0">
+          <p className=" text-green-700 text-xl text-center mx-8">
+            Budget engagé : <br />
             <strong className="text-green-700 ">
               {parseValue(data.valeur) + "€"}
             </strong>
-          )}
-        </p>
-      </section>
-      <section className=" w-11/12 flex xl:flex-col overflow-x-scroll xl:overflow-y-scroll xl:h-96 my-3 p-2 bg-white bg-opacity-100  rounded-2xl ">
-        {isSuccess && data?.equipe?.length > 0 ? (
-          data.equipe.map((player, index) => {
-            return (
-              <section
-                className="bg-green-200 bg-opacity-50 rounded shadow m-2 p-2 transform hover:scale-110"
-                key={index}
-                onClick={async () => {}}
-              >
-                <div>
-                  <strong>{player.name}</strong>
-                  <p className="px-1 text-xs text-green-500 bg-white w-20 shadow rounded ml-16">
-                    {parsePlayerValue(player.value)}
-                  </p>
-                </div>
-                <button
-                  className="bg-red-400 rounded-xl mt-4 px-2 text-xs shadow hover:bg-black hover:text-white"
-                  onClick={() => {
-                    removePlayer.mutate(player);
-                  }}
-                >
-                  Licencier
-                </button>
-              </section>
-            );
-          })
-        ) : (
-          <p className=" m-auto italic opacity-50 text-red-700 text-center ">
-            Aucun joueur dans l'équipe
           </p>
-        )}
-      </section>
+        </section>
 
-      <button
-        className="rounded-2xl bg-yellow-400 px-2"
-        onClick={() => {
-          saveMyTeams(1);
-        }}
-      >
-        Sauvegarder cette équipe
-      </button>
-      <button className="rounded-2xl bg-gray-400 px-2 mt-2 border-white border-2">
-        Voir toutes mes équipes
-      </button>
-    </div>
+        <section
+          className={
+            " w-11/12 flex xl:flex-col overflow-x-hidden xl:h-96 my-3 p-5 bg-white bg-opacity-100 rounded-2xl "
+          }
+        >
+          {data.equipe.length > 0 ? (
+            data.equipe.map((player, index) => {
+              console.log("c'est index");
+              console.log(index);
+              return (
+                <section
+                  className="bg-green-200 bg-opacity-50 rounded shadow m-2 p-2 transform hover:scale-110"
+                  key={index}
+                >
+                  <div>
+                    <strong>{player.name}</strong>
+                    <p className="px-1 text-xs text-green-500 bg-white w-20 shadow rounded ml-16">
+                      {parsePlayerValue(player.value)}
+                    </p>
+                  </div>
+                  <button
+                    className="bg-red-400 rounded-xl mt-4 px-2 text-xs shadow hover:bg-black hover:text-white"
+                    onClick={() => {
+                      removePlayer.mutate({ player: player, index: index });
+                    }}
+                  >
+                    Licencier
+                  </button>
+                </section>
+              );
+            })
+          ) : (
+            <p className=" m-auto italic opacity-50 text-red-700 text-center ">
+              Aucun joueur dans l'équipe
+            </p>
+          )}
+        </section>
+
+        {isConnected && (
+          <>
+            <button
+              className="rounded-2xl bg-yellow-400 px-2 hover:bg-yellow-500"
+              onClick={() => {
+                userHasTeamsExisting ? updateMyTeams() : saveMyTeams();
+                // implementer element a uptader
+              }}
+            >
+              Sauvegarder cette équipe
+            </button>
+          </>
+        )}
+        {data.equipe.length > 0 && (
+          <button
+            className="px-1 rounded-lg bg-red-500 text-white cursor-pointer mt-2 hover:bg-red-600 "
+            onClick={() => {
+              removeAllPlayers.mutate();
+            }}
+          >
+            Réinitialiser l'équipe
+          </button>
+        )}
+      </div>
+    )
   );
 };
 

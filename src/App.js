@@ -11,7 +11,6 @@ import { useState, useEffect } from "react";
 
 // GESTION DES COOKIES
 import Cookies from "js-cookie";
-import { getUserToken } from "./Requests/user";
 
 // GESTION DE LA FENETRE D'ALERTE
 // ================================>
@@ -65,11 +64,6 @@ function App() {
     }
   }, []);
   // ========================================>
-
-  // Gestion DE LA CONNEXION DU USER
-  const userToken = useQuery("USERTOKEN", getUserToken);
-  console.log("UT");
-  console.log(userToken.data);
 
   return (
     <Router>

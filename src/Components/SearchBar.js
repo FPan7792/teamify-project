@@ -3,7 +3,7 @@ import { useMutation, useQueryClient, useQuery } from "react-query";
 import {
   fetchTransfertInfos,
   AddPlayerToMyTeam,
-  displayMyTeam,
+  fetchMySavedTeams,
 } from "../Requests/requests";
 
 // import des icones
@@ -33,14 +33,15 @@ const SearchBar = () => {
   // EMPECHER L AJOUT DU MEME JOUEUR PLUSIEURS FOIS DANS LA MEME EQUIPE
 
   // on fetch les data de l'équipe mis en cache
-  const fetchmyTeam = useQuery("MyTeam", displayMyTeam);
+  const fetchmyTeam = useQuery("DEFAULT_TEAM", fetchMySavedTeams);
   const { data } = fetchmyTeam;
 
   // fonction qui permet d'ajouter un joueur en cliquant sur RECRUTER
   const queryClient = useQueryClient();
-  const AddPlayer = useMutation("MyTeam", AddPlayerToMyTeam, {
+  const AddPlayer = useMutation(AddPlayerToMyTeam, {
     onSuccess: () => {
-      queryClient.invalidateQueries("MyTeam");
+      queryClient.invalidateQueries("MY_TEAM");
+      queryClient.invalidateQueries("DEFAULT_TEAM");
     },
   });
 
@@ -130,7 +131,7 @@ const SearchBar = () => {
         <input
           className=" focus:outline-none focus:bg-opacity-100 h-12 text-center text-white rounded-3xl my-7 w-4/5 shadow-xl bg-black bg-opacity-75"
           type="text"
-          placeholder="Tape le nom du joueur que tu recherches "
+          placeholder="Entres ici le nom du joueur que tu recherches "
           name="search"
           value={search}
           onChange={(e) => {
@@ -153,7 +154,7 @@ const SearchBar = () => {
       </div>
       <section
         className={
-          alert.display && search == ""
+          alert.display && search === ""
             ? " transition-all duration-500 ease-in-out p-5 rounded-2xl w-3/5 flex justify-center items-center flex-col"
             : playerFetched || alert.display
             ? " opacity-100 transition-all duration-500 ease-in-out p-5 shadow-md bg-opacity-50 bg-white rounded-2xl w-3/5 flex justify-center items-center flex-col "
