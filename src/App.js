@@ -7,41 +7,53 @@ import Main from "./Containers/Main";
 import LogIn from "./Containers/LogIn";
 import SignUp from "./Containers/SignUp";
 import Welcome from "./Components/Welcome";
-
-// cookies de première connexion
-import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
 
-// gestions de la fenetre d'alerte
-import { useQuery, useMutation, useQueryClient } from "react-query";
-import { resetAlerte } from "./Requests/requests";
+// GESTION DES COOKIES
+import Cookies from "js-cookie";
 
-// import des icones
+// GESTION DE LA FENETRE D'ALERTE
+// ================================>
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { resetAlerte, displayAlerte } from "./Requests/alerts";
+// ================================>
+
+// import des icones FONT AWESOME
+// ================================>
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faAngleDown,
   faSearch,
   faAngleDoubleDown,
 } from "@fortawesome/free-solid-svg-icons";
-import { displayAlerte } from "./Requests/requests";
 library.add(faAngleDown, faSearch, faAngleDoubleDown);
+// ================================>
 
 function App() {
-  // Message de bienvenue à la premiere connexion
+  // Modale à la premiere connexion (INFOS MAJ & WELCOME)
   const [welcome, setWelcome] = useState({ vital: false, display: false });
 
   // GESTION DE LA FENETRE D'ALERTE
+  // fecth alert
   const alerte = useQuery("Alerte", displayAlerte);
+  // stocker alerte
   const { data } = alerte;
-  console.log(alerte);
-  // const [message, setMessage] = useState();
+  // mettre a jour alerte
   const queryClient = useQueryClient();
   const alerteReset = useMutation("Alerte", resetAlerte, {
     onSuccess: () => {
       queryClient.invalidateQueries("Alerte");
     },
   });
+  // faire disparaitre la fenetre d'alerte apres delai
+  useEffect(() => {
+    if (data?.display) {
+      setTimeout(() => alerteReset.mutate(), 4000);
+    }
+  });
 
+  // GESTION DE LA MODALE D'INFORMATION
+  // ========================================>
   useEffect(() => {
     if (!Cookies.get("teamify")) {
       setWelcome({ vital: true, display: false });
@@ -53,17 +65,11 @@ function App() {
   }, []);
   // ========================================>
 
-  useEffect(() => {
-    if (data?.display) {
-      setTimeout(() => alerteReset.mutate(), 4000);
-    }
-  });
-
   return (
     <Router>
       <div className="relative h-full bg-main-bg bg-center bg-cover bg-no-repeat ">
         {/* <section className=" rounded absolute top-0 bg-main-bg bg-center bg-no-repeat h-screen w-full bg-cover"></section> */}
-        <div className="h-full">
+        <div className="h-full pt-2 xl:pt-0 ">
           <Header />
           <Switch>
             <Route path="/login">
@@ -73,7 +79,7 @@ function App() {
               <SignUp />
             </Route>
             <Route path="/">
-              {/* <section className="rounded-xl absolute top-full  bg-opacity-50 bg-terrain bg-center bg-no-repeat h-screen w-11/12 bg-cover "></section> */}
+              {/* <section className="rounded-xl absolute top-full bg-opacity-50 bg-terrain bg-center bg-no-repeat h-screen w-11/12 bg-cover "></section> */}
               <Main />
             </Route>
           </Switch>

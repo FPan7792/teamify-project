@@ -1,20 +1,23 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import axios from "axios";
+
 import { useMutation, useQueryClient } from "react-query";
 import {
   alerteErrorFormEmail,
-  alerteValidationCreateAccount,
-} from "../Requests/requests";
-
-import axios from "axios";
+  alerteValidationConnection,
+} from "../Requests/alerts";
 
 // GESTION DU FORMULAIRE
 import { useForm } from "react-hook-form";
 
 // Gestion des cookies de connexion
 import Cookies from "js-cookie";
+import { setUserToken } from "../Requests/user";
 
 function LogIn() {
+  const history = useHistory();
+
   // css conditionnel des inputs
   const inputStyle =
     " transition-all duration-200 h-10 mb-5 w-4/6 rounded-full text-center mx-auto text-xs text-black focus:outline-none focus:bg-green-100 focus-within:font-bold shadow focus:ring-4 focus:ring-green-300";
@@ -23,7 +26,6 @@ function LogIn() {
 
   // ====================>
 
-  // message d'alerte
   // GESTION DE LA FENETRE D'ALERTE
   const queryClient = useQueryClient();
   const alerteEmail = useMutation("Alerte", alerteErrorFormEmail, {
@@ -32,16 +34,26 @@ function LogIn() {
     },
   });
 
-  const alerteValidation = useMutation(
-    "Alerte",
-    alerteValidationCreateAccount,
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("Alerte");
-      },
-    }
-  );
+  const alerteValidation = useMutation("Alerte", alerteValidationConnection, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("Alerte");
+      history.push("/");
+    },
+  });
 
+  // GESTION DU USERTOKEN
+  // ====================>
+
+  const setTokenForUserConnexion = useMutation("USER", setUserToken, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("USER");
+      queryClient.invalidateQueries("USERTEAMS");
+    },
+  });
+
+  // ====================>
+
+  // GESTION DU FORM
   // collecte et envoie des form
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
@@ -70,8 +82,10 @@ function LogIn() {
         );
         console.log(response.data);
 
-        const { token } = response.data;
-        Cookies.set("userToken", token);
+        const { token, username } = response.data;
+        await Cookies.set("userToken", token);
+        await Cookies.set("userName", username);
+        await setTokenForUserConnexion.mutate(username);
 
         return alerteValidation.mutate();
       } catch (error) {
@@ -146,6 +160,7 @@ function LogIn() {
             <p className="w-2/6 underline ">Mot de passe</p>
             <input
               className={!errors.password ? inputStyle : noValidInputStyle}
+              type="password"
               placeholder="Mot de passe"
               {...register("password", { required: true })}
             />

@@ -6,18 +6,21 @@ import {
   alerteErrorFormEmail,
   alerteErrorFormUsername,
   alerteValidationCreateAccount,
-} from "../Requests/requests";
+} from "../Requests/alerts";
 
 // GESTION DE LA NAVIGATION
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 // GESTION DU FORMULAIRE
 import { useForm } from "react-hook-form";
 
 // Gestion des cookies de connexion
 import Cookies from "js-cookie";
+import { setUserToken } from "../Requests/user";
 
 function SignUp() {
+  const history = useHistory();
+
   // css conditionnel des inputs
   const inputStyle =
     " transition-all duration-200 h-10 mb-5 w-4/6 rounded-full text-center mx-auto text-xs text-black focus:outline-none focus:bg-green-100 focus-within:font-bold shadow focus:ring-4 focus:ring-green-300";
@@ -47,11 +50,21 @@ function SignUp() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("Alerte");
+        history.push("/");
       },
     }
   );
 
   // ==============================================>
+
+  // GESTION DU USERTOKEN
+  // ====================>
+
+  const setTokenForUserConnexion = useMutation("USER", setUserToken, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("USER");
+    },
+  });
 
   // collecte et envoie des form
   // react hook form config
@@ -78,6 +91,7 @@ function SignUp() {
   // soumission du form
   const onSubmit = (data) => {
     setValidation(true);
+
     console.log(data);
     const infos = {
       username: data.username,
@@ -92,16 +106,14 @@ function SignUp() {
           "http://127.0.0.1:3001/user/signup",
           infos
         );
+
         console.log(response.data);
 
-        const { token } = response.data;
+        const { token, username } = response.data;
         await Cookies.set("userToken", token, { expires: 30 });
+        await Cookies.set("userName", username);
+        await setTokenForUserConnexion.mutate(username);
 
-        // provideAlerte(
-        //   "Votre compte à bien été créé, Bienvenue dans l'équipe !",
-        //   true,
-        //   true
-        // );
         alerteValidation.mutate();
       } catch (error) {
         console.log(error.response);
@@ -112,11 +124,6 @@ function SignUp() {
             { shouldFocus: true }
           );
           return alerteEmail.mutate("Cet email dispose déjà d'un compte");
-          // provideAlerte(
-          //   "Cet email dispose déja d'un compte",
-          //   true,
-          //   false
-          // );
         } else if (error.response.data === "Username already taken") {
           setError(
             "username",
@@ -124,12 +131,6 @@ function SignUp() {
             { shouldFocus: true }
           );
           return alerteUsername.mutate();
-
-          // provideAlerte(
-          //   "Ce nom d'utilisateur est déja pris",
-          //   true,
-          //   false
-          // );
         }
       }
     };
@@ -323,15 +324,6 @@ function SignUp() {
           </Link>
         </section>
       </section>
-      <section
-      // className={
-      //   alerte.display
-      //     ? alerte.success
-      //       ? " transition-all duration-1000 absolute bottom-1 right-5 bg-green-200 bg-opacity-100 rounded p-10 ease-in-out"
-      //       : " transition-all duration-1000 absolute bottom-1 right-5 bg-yellow-200 bg-opacity-100 rounded p-10 ease-in-out  "
-      //     : " transition-all duration-1000 absolute bottom-1 right-5 bg-green-200 bg-opacity-50 rounded p-10 opacity-0 ease-in-out "
-      // }
-      ></section>
     </div>
   );
 }

@@ -29,6 +29,7 @@ import {
   faAngleDoubleDown,
   faAngleDoubleUp,
 } from "@fortawesome/free-solid-svg-icons";
+import { getUser } from "../Requests/user";
 // ----------------------------->
 
 const Home = () => {
@@ -79,12 +80,16 @@ const Home = () => {
   // set a true au survol des composants
   // si c'est true, on change les props du composant pour afficher la transition
 
+  const userName = useQuery("USER", getUser).data?.userName;
+
   return (
-    <div className="flex-1 flex items-center flex-col rounded-2xl my-5 relative p-7 h-full ">
-      <section className=" font-Dosis p-10 flex flex-col items-center w-full h-54 bg-black bg-opacity-50 rounded-xl ">
+    <div className="flex-1 flex items-center flex-col rounded-2xl my-5 relative xl:p-7 h-full ">
+      <section className=" font-Dosis p-10 flex flex-col items-center w-11/12 xl:w-full h-54 bg-gray-700 bg-opacity-60 rounded-xl ">
         <h1 className="font-bold text-2xl">
-          Bienvenue dans l'univers de
-          <span className="text-green-100"> TEAMIFY</span>
+          <span className="text-green-100">
+            {" "}
+            Bienvenue {userName && userName}{" "}
+          </span>
         </h1>
         <p className="text-white text-center">
           Construis ton équipe sans plus attendre !
