@@ -40,8 +40,8 @@ const Header = () => {
 
   return (
     <nav className=" flex justify-center items-center shadow-md w-11/12 mx-auto xl:bg-black xl:bg-opacity-80  xl:justify-between xl:items-center xl:w-full rounded xl:rounded-b-lg p-3 font-Dosis ">
-      <section className="flex justify-center items-center cursor-pointer ">
-        <Link to="/">
+      <section className="flex justify-center items-center">
+        <Link to="/" className="flex justify-center items-center">
           <span className=" border-white border-2 border-solid shadow-lg bg-green-200 bg-opacity-90 rounded-full p-2 xl:inline-block hidden ">
             <img
               className="inline-block  "
@@ -50,7 +50,7 @@ const Header = () => {
               width="50"
             />
           </span>
-          <span className=" font-Dosis mx-2 font-sans font-bold text-xl xl:text-3xl xl:text-green-200 ">
+          <span className=" font-Dosis mx-2 font-sans font-bold text-xl xl:text-2xl xl:text-green-200 ">
             TEAMIFY
           </span>
         </Link>
