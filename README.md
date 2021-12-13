@@ -2,7 +2,7 @@
 
 ## Welcome to the official and intertaining API for Teamify the soccer team of your dreams .
 
-If you consume soccer as a passion, and your biggest dream is to create a team with greatest current players, you are actually at the great place. 😍
+If you consume soccer as a passion, and your biggest dream is to create a team with greatest current players, you are definitely at the great place. 😍
 
 **Try TEAMIFY now !**
 
@@ -18,13 +18,14 @@ _Have a view on your team value and manage the players your want in your team_
 
 _Create an account and LogIn_
 
+_Save your teams into DTB to get it back at anytime_
+
 **FEATURES COMING SOON**
 
-_Save your teams into DTB_
 
 _Find a team among the 6 big europeans soccer leagues_
 
-_Search and find a player by team_
+_Search and find players by team_
 
 _Set a maximum amount for your team a control your mercato goals_
 
@@ -60,3 +61,19 @@ npm install -y
 ```javascript
 yarn start
 ```
+
+Take a look below for some demo pictures 👇
+
+![DEMO2](./src/assets/TEAMIFY_CAPT/demo2.png)
+
+![DEMO1](./src/assets/TEAMIFY_CAPT/demo1.png)
+
+![DEMO11](./src/assets/TEAMIFY_CAPT/demo11.png)
+
+![DEMO10](./src/assets/TEAMIFY_CAPT/demo10.png)
+
+![DEMO9](./src/assets/TEAMIFY_CAPT/demo9.png)
+
+![DEMO5](./src/assets/TEAMIFY_CAPT/demo5.png)
+
+![DEMO3](./src/assets/TEAMIFY_CAPT/demo3.png)

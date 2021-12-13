@@ -8,7 +8,8 @@ export const displayAlerte = () => {
 };
 
 export const alerteValidationCreateAccount = () => {
-  alerte.message = "Ton compte à bien été créé. Bienvenue dans l'équipe !";
+  alerte.message =
+    "Ton compte à bien été créé. Un email vient de t'être envoyé. Bienvenue dans l'équipe !";
   alerte.display = true;
   alerte.success = true;
 

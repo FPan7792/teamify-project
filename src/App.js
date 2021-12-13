@@ -1,7 +1,6 @@
 // navigation du site
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import "./App.css";
 import Header from "./Containers/Header";
 import Main from "./Containers/Main";
 import LogIn from "./Containers/LogIn";

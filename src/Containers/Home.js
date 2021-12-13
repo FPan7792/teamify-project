@@ -84,16 +84,13 @@ const Home = () => {
 
   return (
     <div className="flex-1 flex items-center flex-col rounded-2xl my-5 relative xl:p-7 h-full ">
-      <section className=" font-Dosis p-10 flex flex-col items-center w-11/12 xl:w-full h-54 bg-gray-700 bg-opacity-60 rounded-xl ">
-        <h1 className="font-bold text-2xl">
-          <span className="text-green-100">
-            {" "}
-            Bienvenue {userName && userName}{" "}
-          </span>
-        </h1>
-        <p className="text-white text-center">
-          Construis ton équipe sans plus attendre !
-        </p>
+      <section className=" font-Dosis flex flex-col items-center w-10/12 xl:w-full h-54 bg-gray-700 bg-opacity-60 rounded-xl ">
+        <section className="text-green-50 flex flex-col items-center ">
+          <h1 className=" text-2xl mt-8 ">
+            <span> Bienvenue {userName && userName} ! </span>
+          </h1>
+          <p>Construis ton équipe sans plus attendre ⚽️</p>
+        </section>
 
         <SearchBar />
       </section>
