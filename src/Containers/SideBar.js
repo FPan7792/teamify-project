@@ -94,37 +94,34 @@ const SideBar = ({ globalAppearence }) => {
   return (
     isSuccess && (
       <div className={globalAppearence}>
-        <section className="flex-shrink-0">
-          <p className=" text-green-700 text-xl text-center mx-8">
-            Budget engagé : <br />
-            <strong className="text-green-700 ">
-              {parseValue(data.valeur) + "€"}
-            </strong>
-          </p>
-        </section>
+        <span className=" text-amber-400 font-semibold text-base md:text-lg text-center md:flex md:justify-center md:items-center md:flex-col xl:mb-4 xl:bg-white xl:px-9 xl:py-1 xl:rounded-xl xl:shadow ">
+          Budget engagé : {"  "}
+          <span className="text-amber-700 text-xl text-bold ">
+            {parseValue(data.valeur) + "€"}
+          </span>
+        </span>
 
         <section
           className={
-            " w-11/12 flex xl:flex-col overflow-x-hidden xl:h-96 my-3 p-5 bg-white bg-opacity-100 rounded-2xl "
+            " flex xl:flex-col overflow-x-auto xl:overflow-y-auto w-full px-2 md:p-2 xl:h-full bg-none md:bg-white sm:bg-opacity-100 rounded-2xl "
           }
         >
           {data.equipe.length > 0 ? (
             data.equipe.map((player, index) => {
-              console.log("c'est index");
-              console.log(index);
               return (
                 <section
-                  className="bg-green-200 bg-opacity-50 rounded shadow m-2 p-2 transform hover:scale-110"
+                  className="  bg-white md:bg-green-200 md:bg-opacity-50 rounded-xl shadow m-1 md:m-2 p-2 w-50 transform hover:scale-110 text-xs sm:text-sm md:text-base text-center md:text-left flex flex-col justify-between items-center  "
                   key={index}
                 >
-                  <div>
-                    <strong>{player.name}</strong>
-                    <p className="px-1 text-xs text-green-500 bg-white w-20 shadow rounded ml-16">
-                      {parsePlayerValue(player.value)}
-                    </p>
-                  </div>
+                  <p className="font-semibold text-center xl:mr-10 ">
+                    {player.name}
+                  </p>
+                  <p className="px-1 text-xs sm:text-sm md:text-sm text-green-500 bg-white w-20 shadow rounded md:ml-16 text-center ">
+                    {parsePlayerValue(player.value)}
+                  </p>
+
                   <button
-                    className="bg-red-400 rounded-xl mt-4 px-2 text-xs shadow hover:bg-black hover:text-white"
+                    className="bg-red-400 rounded-xl mt-2 md:mt-4  px-1 md:px-2 text-xs md:text-sm shadow hover:bg-black hover:text-white "
                     onClick={() => {
                       removePlayer.mutate({ player: player, index: index });
                     }}
@@ -135,8 +132,8 @@ const SideBar = ({ globalAppearence }) => {
               );
             })
           ) : (
-            <p className=" m-auto italic opacity-50 text-red-700 text-center ">
-              Aucun joueur dans l'équipe
+            <p className=" m-auto italic opacity-50 text-red-700 text-center text-xs sm:text-sm md:text-base  ">
+              (Aucun joueur dans l'équipe)
             </p>
           )}
         </section>
@@ -156,7 +153,7 @@ const SideBar = ({ globalAppearence }) => {
         )}
         {data.equipe.length > 0 && (
           <button
-            className="px-1 rounded-lg bg-red-500 text-white cursor-pointer mt-2 hover:bg-red-600 "
+            className="px-1 rounded-lg text-xs sm:text-sm md:text-base mb-2 bg-amber-500 text-white cursor-pointer mt-2 hover:bg-amber-600 "
             onClick={() => {
               removeAllPlayers.mutate();
             }}

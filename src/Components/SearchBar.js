@@ -25,8 +25,8 @@ const SearchBar = () => {
     setAlert({ message, success, display: true });
 
     setTimeout(
-      () => setAlert({ message, success: null, display: false }),
-      2000
+      () => setAlert({ message: null, success: null, display: false }),
+      3000
     );
   };
 
@@ -40,7 +40,6 @@ const SearchBar = () => {
   const queryClient = useQueryClient();
   const AddPlayer = useMutation(AddPlayerToMyTeam, {
     onSuccess: () => {
-      queryClient.invalidateQueries("MY_TEAM");
       queryClient.invalidateQueries("DEFAULT_TEAM");
     },
   });
@@ -115,21 +114,10 @@ const SearchBar = () => {
   };
 
   return (
-    <section className=" m-10 h-4/5 w-4/5 rounded-xl flex flex-col items-center justify-center">
-      <div className=" flex w-full justify-center items-center ">
-        <FontAwesomeIcon
-          className={
-            isLoading
-              ? "animate-spin visible transition-all duration-150 mr-2"
-              : " animate-spin invisible transition-all ease-in-out duration-300 opacity-0  "
-          }
-          icon={faSpinner}
-          color="lightgreen"
-          size="2x"
-        />
-
+    <section className=" relative w-full rounded-xl flex flex-col items-center mt-2 ">
+      <div className="flex flex-col md:flex-row w-4/5 items-center ">
         <input
-          className=" focus:outline-none focus:bg-opacity-100 h-12 text-center text-white rounded-3xl my-7 w-4/5 shadow-xl bg-black bg-opacity-75"
+          className=" focus:outline-none focus:bg-opacity-100 h-9 md:h-12 text-center md:text-base text-amber-300 font-semibold rounded-3xl w-full shadow-xl bg-black bg-opacity-75"
           type="text"
           placeholder="Entres ici le nom du joueur que tu recherches "
           name="search"
@@ -143,41 +131,58 @@ const SearchBar = () => {
             }
           }}
         />
-        <button
-          className=" active:bg-green-700 active:scale-105 inline-block rounded-full bg-opacity-50 shadow-md bg-green-500 xl:bg-opacity-100 hover:scale-110 transform translate-x-2 xl:-translate-x-11 w-12 h-12 cursor-pointer  "
-          onClick={() => {
-            fetch();
-          }}
-        >
-          <FontAwesomeIcon icon={faSearch} color="white" />
-        </button>
       </div>
+
+      <button
+        className=" flex active:bg-white active:scale-105 rounded-full bg-opacity-100 shadow-md bg-amber-300 xl:bg-opacity-100 hover:scale-110 w-8 h-8 p-4 md:p-5 md:mt-2 cursor-pointer justify-center items-center"
+        onClick={() => {
+          fetch();
+        }}
+      >
+        <FontAwesomeIcon icon={faSearch} color="black" />
+      </button>
+
+      <FontAwesomeIcon
+        className={
+          isLoading
+            ? "animate-spin visible transition-all duration-300 mb-2 mt-4 md:mb-5 "
+            : " animate-spin invisible transition-all ease-in-out duration-100  "
+        }
+        icon={faSpinner}
+        color="orange"
+        size="2x"
+      />
+
       <section
         className={
           alert.display && search === ""
-            ? " transition-all duration-500 ease-in-out p-5 rounded-2xl w-3/5 flex justify-center items-center flex-col"
+            ? " transition-all duration-500 ease-in-out rounded-2xl w-full flex-col mt-8 bg-white bg-opacity-0  "
             : playerFetched || alert.display
-            ? " opacity-100 transition-all duration-500 ease-in-out p-5 shadow-md bg-opacity-50 bg-white rounded-2xl w-3/5 flex justify-center items-center flex-col "
-            : " opacity-0 transition-all duration-500 ease-in shadow p-5 bg-white bg-opacity-30 rounded-md w-3/5 flex justify-center items-center flex-col"
+            ? " opacity-100 transition-all duration-500 ease-in-out shadow-md bg-opacity-50 bg-white rounded-2xl w-4/5 p-3 md:p-4 md:py-5 mb-3 border-red-500 border-2 xl:flex xl:flex-col xl:justify-center "
+            : " opacity-0 transition-all duration-500 ease-in shadow bg-opacity-0 rounded-md w-full flex justify-center items-center flex-col "
         }
       >
         <div>
           <section
             className={
               alert.success === "OK"
-                ? " transition-all duration-500 flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-green-100 m-5 "
+                ? " transition-all duration-500 flex items-center flex-col p-1 md:p-4 bg-none rounded-xl my-1 md:my-5 w-full "
                 : alert.success === "NO"
-                ? " transition-all duration-500  flex items-center justify-center flex-col p-4 bg-opacity-80 rounded-xl bg-red-100 m-5 "
+                ? " transition-all duration-500 flex items-center flex-col p-2 md:p-4 bg-opacity-80 rounded-xl md:my-5 "
                 : playerFetched
-                ? " transition-all duration-500 flex items-center justify-center flex-col p-4 opacity-100 bg-white m-5 rounded-xl border-white border-2 border-solid "
-                : " transition-all duration-500 flex items-center justify-center flex-col p-4 opacity-0 bg-white m-5 rounded-xl border-white border-2 border-solid "
+                ? " transition-all duration-500 flex items-center flex-col p-4 opacity-80 bg-amber-400 bg-none sm:bg-white rounded-xl border-solid w-4/5 shadow-2xl mx-auto "
+                : " transition-all duration-100 items-center justify-center flex-col  opacity-0 h-0 bg-white md:m-5 rounded-xl border-white border-2 border-solid "
             }
           >
             {playerFetched ? (
-              <>
-                <p className="font-bold text-xl">{playerFetched.name}</p>
-                <p className="italic text-green-700 ">{playerFetched.value}</p>
-              </>
+              <div className="min-h-full">
+                <p className="font-bold md:text-xl md:px-10">
+                  {playerFetched.name}
+                </p>
+                <p className="italic text-green-700 font-bold text-sm md:text-xl md:px-10 ">
+                  {playerFetched.value}
+                </p>
+              </div>
             ) : (
               alert.message && (
                 <p
@@ -190,7 +195,9 @@ const SearchBar = () => {
                         " transition-all duration-500 font-bold font-Dosis italic text-yellow-400 text-center"
                   }
                 >
-                  {alert.message}
+                  <div className=" h-full md:h-11 font-normal ">
+                    {alert.message}
+                  </div>
                 </p>
               )
             )}
@@ -200,12 +207,12 @@ const SearchBar = () => {
         <section
           className={
             playerFetched
-              ? " transition-all duration-1000 flex w-2/3 justify-between items-center opacity-100 "
-              : " opacity-0 transition-all duration-1000 flex w-2/3 justify-between items-center "
+              ? " transition-all duration-500 w-1/2 mx-auto md:w-full flex items-center flex-col md:flex-row opacity-100 h-full flex-wrap md:justify-around"
+              : " opacity-0 transition-all duration-500 flex w-0 justify-between items-center "
           }
         >
           <button
-            className="active:bg-green-900 active:text-white active:scale-105 inline-block my-2 text-green-700 hover:text-green-900 h-full bg-green-100 hover:bg-green-200 hover:shadow-lg text-center rounded-xl shadow px-3 font-bold transform hover:scale-105 "
+            className="active:bg-green-900 active:text-white active:scale-105 inline-block my-2 text-green-700 hover:text-green-900 bg-green-100 hover:bg-green-200 hover:shadow-lg text-center rounded-xl shadow px-3 font-bold transform hover:scale-105 w-3/4 md:w-2/4 text-xs sm:text-sm md:text-base py-1 sm:py-2"
             onClick={async () => {
               console.log(playerFetched);
               playerFetched
@@ -227,7 +234,7 @@ const SearchBar = () => {
             }{" "}
           </button>
           <button
-            className="bg-red-600 text-white font-bold rounded-full px-2 transform hover:scale-105 h-7 hover:bg-red-700 "
+            className="bg-red-500 text-white font-bold rounded-full px-2 transform hover:scale-105 hover:bg-red-700 w-3/4 md:w-1/4 text-xs sm:text-sm md:text-base"
             onClick={() => {
               giveUpContracts();
             }}

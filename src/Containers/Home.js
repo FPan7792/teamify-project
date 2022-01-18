@@ -29,7 +29,6 @@ import {
   faAngleDoubleDown,
   faAngleDoubleUp,
 } from "@fortawesome/free-solid-svg-icons";
-import { getUser } from "../Requests/user";
 // ----------------------------->
 
 const Home = () => {
@@ -80,24 +79,13 @@ const Home = () => {
   // set a true au survol des composants
   // si c'est true, on change les props du composant pour afficher la transition
 
-  const userName = useQuery("USER", getUser).data?.userName;
-
   return (
-    <div className="flex-1 flex items-center flex-col rounded-2xl my-5 relative xl:p-7 h-full ">
-      <section className=" font-Dosis flex flex-col items-center w-10/12 xl:w-full h-54 bg-gray-700 bg-opacity-60 rounded-xl ">
-        <section className="text-green-50 flex flex-col items-center ">
-          <h1 className=" text-2xl mt-8 ">
-            <span> Bienvenue {userName && userName} ! </span>
-          </h1>
-          <p>Construis ton équipe sans plus attendre ⚽️</p>
-        </section>
-
-        <SearchBar />
-      </section>
+    <div className="font-Dosis flex justify-center items-center flex-col">
+      <SearchBar />
 
       {
         <section className=" w-full rounded-3xl flex justify-center ">
-          <button
+          {/* <button
             className={
               !displayLeagues
                 ? "bg-black rounded-full p-2 mt-16 mt w-9 h-9 flex justify-center items-center hover:bg-gray-50 transition-all duration-150 ease-in-out animate-bounce "
@@ -116,7 +104,7 @@ const Home = () => {
                 color="lightgreen"
               />
             )}
-          </button>
+          </button> */}
 
           {displayLeagues && (
             <div className=" bg-cover bg-no-repeat w-full rounded-xl flex flex-col items-center shadow-xl py-5 absolute top-full ">

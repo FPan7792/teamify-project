@@ -127,9 +127,9 @@ function LogIn() {
   // ==============================>
 
   return (
-    <div className=" relative font-Dosis h-screen flex justify-center items-center ">
-      <section className="bg-black bg-opacity-70 w-4/6 relative rounded-lg flex flex-col items-center -mt-20 ">
-        <h1 className="text-2xl text-green-200 font-bold py-20">
+    <div className=" font-Dosis w-full ">
+      <section className="bg-black bg-opacity-70 w-4/6 rounded-lg flex flex-col items-center xl:mt-12 mx-auto ">
+        <h1 className="text-2xl text-green-200 font-bold py-10">
           Connectes-toi pour retrouver tes équipes !
         </h1>
         <form

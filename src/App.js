@@ -66,23 +66,20 @@ function App() {
 
   return (
     <Router>
-      <div className="relative h-full bg-main-bg bg-center bg-cover bg-no-repeat ">
-        {/* <section className=" rounded absolute top-0 bg-main-bg bg-center bg-no-repeat h-screen w-full bg-cover"></section> */}
-        <div className="h-full pt-2 xl:pt-0 ">
-          <Header />
-          <Switch>
-            <Route path="/login">
-              <LogIn />
-            </Route>
-            <Route path="/signup">
-              <SignUp />
-            </Route>
-            <Route path="/">
-              {/* <section className="rounded-xl absolute top-full bg-opacity-50 bg-terrain bg-center bg-no-repeat h-screen w-11/12 bg-cover "></section> */}
-              <Main />
-            </Route>
-          </Switch>
-        </div>
+      <div className="relative m-auto xl:h-screen bg-gradient-to-r from-[#f1cb7b]/70 to-[#8ed550]/70 md:m-5 rounded-xl p-5 md:p-2 border-4 border-amber-200 ">
+        <Header />
+        <Switch>
+          <Route path="/login">
+            <LogIn />
+          </Route>
+          <Route path="/signup">
+            <SignUp />
+          </Route>
+          <Route path="/">
+            <Main />
+          </Route>
+        </Switch>
+
         <Welcome welcome={welcome} setWelcome={setWelcome} />
         <p
           className={

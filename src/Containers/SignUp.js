@@ -172,9 +172,9 @@ function SignUp() {
   };
 
   return (
-    <div className=" relative font-Dosis h-full flex justify-center items-center ">
-      <section className="bg-black bg-opacity-70 w-4/6 relative rounded-lg flex flex-col items-center my-12 h-5/6 ">
-        <h1 className="text-2xl text-green-200 font-bold py-10">
+    <div className=" font-Dosis ">
+      <section className="bg-black bg-opacity-70 w-4/6 rounded-lg flex flex-col items-center mx-auto ">
+        <h1 className="text-2xl text-green-200 font-bold py-5">
           Rejoins la communauté en créant ton compte dès maintenant
         </h1>
         <form
@@ -317,7 +317,7 @@ function SignUp() {
         >
           Réinitialiser tous les champs
         </button>
-        <section className="text-green-100 py-6 flex flex-col justify-center items-center">
+        <section className="text-green-100 py-2 flex flex-col justify-center items-center">
           Tu as déja un compte ?
           <Link to="/login">
             <p className="hover:underline">Connectes-toi en cliquant ici</p>
