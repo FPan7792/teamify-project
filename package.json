@@ -25,6 +25,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
     "css:watch": "tailwindcss -o src/output.css --watch"
   },
   "eslintConfig": {
