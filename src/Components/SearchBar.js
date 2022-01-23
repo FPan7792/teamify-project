@@ -134,7 +134,7 @@ const SearchBar = () => {
       </div>
 
       <button
-        className=" flex active:bg-white active:scale-105 rounded-full bg-opacity-100 shadow-md bg-amber-300 xl:bg-opacity-100 hover:scale-110 w-8 h-8 p-4 md:p-5 md:mt-2 cursor-pointer justify-center items-center"
+        className=" flex active:bg-white active:scale-105 rounded-full bg-opacity-100 shadow-md bg-amber-400 xl:bg-opacity-100 hover:scale-110 w-8 h-8 p-4 md:p-5 md:mt-2 cursor-pointer justify-center items-center"
         onClick={() => {
           fetch();
         }}
@@ -158,7 +158,7 @@ const SearchBar = () => {
           alert.display && search === ""
             ? " transition-all duration-500 ease-in-out rounded-2xl w-full flex-col mt-8 bg-white bg-opacity-0  "
             : playerFetched || alert.display
-            ? " opacity-100 transition-all duration-500 ease-in-out shadow-md bg-opacity-50 bg-white rounded-2xl w-4/5 p-3 md:p-4 md:py-5 mb-3 border-red-500 border-2 xl:flex xl:flex-col xl:justify-center "
+            ? " opacity-100 transition-all duration-500 ease-in-out shadow-md bg-opacity-50 bg-white rounded-2xl w-4/5 p-3 md:p-4 md:py-5 mb-3 xl:flex xl:flex-col xl:justify-center "
             : " opacity-0 transition-all duration-500 ease-in shadow bg-opacity-0 rounded-md w-full flex justify-center items-center flex-col "
         }
       >
