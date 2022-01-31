@@ -3,8 +3,11 @@ import leagues from "../Datas/Leagues.json";
 import _ from "lodash";
 import Cookies from "js-cookie";
 
-const PROD = "https://teamify-project.herokuapp.com/";
-const DEV = "http://127.0.0.1:3001/";
+let URL;
+URL =
+  process.env.NODE_ENV === "production"
+    ? "https://teamify-project.herokuapp.com/"
+    : "http://127.0.0.1:3001/";
 
 export const fetchLeagues = () => {
   return leagues.response;
@@ -13,7 +16,7 @@ export const fetchLeagues = () => {
 // Faire une requete TM
 export const fetchTransfertInfos = async (playerName) => {
   try {
-    const response = await axios.get(`${PROD}player/transfert/${playerName}`);
+    const response = await axios.get(`${URL}player/transfert/${playerName}`);
     return response.data;
   } catch (error) {
     return error.response.status;
@@ -142,7 +145,7 @@ export const saveMyTeams = async () => {
 
   if (user_id) {
     try {
-      const response = await axios.post(`${PROD}user/myteams/create`, value, {
+      const response = await axios.post(`${URL}user/myteams/create`, value, {
         headers: {
           Authorization: "Bearer " + user_id,
         },
@@ -164,7 +167,7 @@ export const fetchMySavedTeams = async () => {
 
   if (user_id) {
     try {
-      const response = await axios.get(`${PROD}user/myteam?user_id=${user_id}`);
+      const response = await axios.get(`${URL}user/myteam?user_id=${user_id}`);
       console.log(response.data);
 
       myTeam = { equipe: [], valeur: 0 };
@@ -195,7 +198,7 @@ export const updateMyTeams = async () => {
   };
   console.log(value);
   try {
-    const response = await axios.put(`${PROD}user/myteam/update`, value, {
+    const response = await axios.put(`${URL}user/myteam/update`, value, {
       headers: {
         Authorization: "Bearer " + user_id,
       },
