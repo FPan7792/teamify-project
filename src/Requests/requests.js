@@ -1,26 +1,25 @@
-import axios from "axios";
-import leagues from "../Datas/Leagues.json";
-import _ from "lodash";
-import Cookies from "js-cookie";
+import axios from 'axios';
+import _ from 'lodash';
+import Cookies from 'js-cookie';
+import leagues from '../Datas/Leagues.json';
 
-let URL;
-URL =
-  process.env.NODE_ENV === "production"
-    ? "https://teamify-project.herokuapp.com/"
-    : "http://127.0.0.1:3001/";
+export const URL =
+   process.env.NODE_ENV === 'production'
+      ? 'https://teamify-project.herokuapp.com/'
+      : 'http://127.0.0.1:3001/';
 
 export const fetchLeagues = () => {
-  return leagues.response;
+   return leagues.response;
 };
 
 // Faire une requete TM
 export const fetchTransfertInfos = async (playerName) => {
-  try {
-    const response = await axios.get(`${URL}player/transfert/${playerName}`);
-    return response.data;
-  } catch (error) {
-    return error.response.status;
-  }
+   try {
+      const response = await axios.get(`${URL}player/transfert/${playerName}`);
+      return response.data;
+   } catch (error) {
+      return error.response.status;
+   }
 };
 
 // MODE SANS CONNEXION
@@ -29,99 +28,98 @@ export const fetchTransfertInfos = async (playerName) => {
 let myTeam = { equipe: [], valeur: 0 };
 
 export const displayMyTeam = () => {
-  console.log(myTeam);
-  return myTeam;
+   console.log(myTeam);
+   return myTeam;
 };
 
 export const AddPlayerToMyTeam = async (player) => {
-  fetchMySavedTeams();
+   fetchMySavedTeams();
 
-  myTeam.equipe.push(player);
+   myTeam.equipe.push(player);
 
-  if (player.value === "-") {
-    player.value = "0";
-  }
+   if (player.value === '-') {
+      player.value = '0';
+   }
 
-  const value = player.value.split("");
+   const value = player.value.split('');
 
-  let newValue = [];
-  let millions = true;
+   const newValue = [];
+   let millions = true;
 
-  for (let i = 0; i < value.length; i++) {
-    if (value[i] === "m") {
-      break;
-    } else if (value[i] === "K") {
-      millions = false;
-      break;
-    } else if (value[i] === ",") {
-      newValue.push(".");
-    } else newValue.push(value[i]);
-  }
+   for (let i = 0; i < value.length; i++) {
+      if (value[i] === 'm') {
+         break;
+      } else if (value[i] === 'K') {
+         millions = false;
+         break;
+      } else if (value[i] === ',') {
+         newValue.push('.');
+      } else newValue.push(value[i]);
+   }
 
-  let playerFinalValue = Number(newValue.join(""));
-  if (millions) {
-    myTeam.valeur += playerFinalValue * 1000000;
-  } else myTeam.valeur += playerFinalValue * 1000;
+   const playerFinalValue = Number(newValue.join(''));
+   if (millions) {
+      myTeam.valeur += playerFinalValue * 1000000;
+   } else myTeam.valeur += playerFinalValue * 1000;
 
-  if (Cookies.get("userToken")) {
-    await updateMyTeams();
-  }
+   if (Cookies.get('userToken')) {
+      await updateMyTeams();
+   }
 
-  return { ...myTeam };
+   return { ...myTeam };
 };
 
 // RETIRER JOUEUR DE L'EQUIPE
 export const removeFromMyTeam = async (player) => {
-  fetchMySavedTeams();
+   fetchMySavedTeams();
 
-  // await _.pull(myTeam.equipe, player);
-  await myTeam.equipe.splice(player.index, 1);
-  console.log(myTeam.equipe);
+   // await _.pull(myTeam.equipe, player);
+   await myTeam.equipe.splice(player.index, 1);
+   console.log(myTeam.equipe);
 
-  function parseValue() {
-    let parse;
+   function parseValue() {
+      let parse;
 
-    if (player.player.value === 0 || player.player.value === "0") {
-      parse = 0;
-      return parse;
-    }
+      if (player.player.value === 0 || player.player.value === '0') {
+         parse = 0;
+         return parse;
+      }
 
-    if (_.endsWith(player.player.value, "mio. €")) {
-      parse = _.replace(player.player.value, " mio. €", "");
-    } else if (_.endsWith(player.player.value, "K €")) {
-      parse = _.replace(player.player.value, " K €", "");
-    }
+      if (_.endsWith(player.player.value, 'mio. €')) {
+         parse = _.replace(player.player.value, ' mio. €', '');
+      } else if (_.endsWith(player.player.value, 'K €')) {
+         parse = _.replace(player.player.value, ' K €', '');
+      }
 
-    parse = _.replace(parse, ",", ".");
+      parse = _.replace(parse, ',', '.');
 
-    if (_.endsWith(player.player.value, "mio. €")) {
-      return Number(parse) * 1000000;
-    } else if (_.endsWith(player.player.value, "K €")) {
-      return Number(parse) * 1000;
-    }
-  }
-  const value = parseValue();
+      if (_.endsWith(player.player.value, 'mio. €')) {
+         return Number(parse) * 1000000;
+      } else if (_.endsWith(player.player.value, 'K €')) {
+         return Number(parse) * 1000;
+      }
+   }
+   const value = parseValue();
 
-  console.log(value);
+   //  console.log(value);
+   //  console.log(myTeam.valeur);
 
-  console.log(myTeam.valeur);
+   myTeam.valeur -= value;
 
-  myTeam.valeur -= value;
+   if (Cookies.get('userToken')) {
+      await updateMyTeams();
+   }
 
-  if (Cookies.get("userToken")) {
-    await updateMyTeams();
-  }
-
-  return { ...myTeam };
+   return { ...myTeam };
 };
 
 export const resetMyTeam = async () => {
-  myTeam.equipe = [];
-  myTeam.valeur = 0;
+   myTeam.equipe = [];
+   myTeam.valeur = 0;
 
-  if (Cookies.get("userToken")) {
-    await updateMyTeams();
-  }
+   if (Cookies.get('userToken')) {
+      await updateMyTeams();
+   }
 };
 
 // ==============================>
@@ -132,85 +130,87 @@ export const resetMyTeam = async () => {
 
 // enregistrer une équipe
 export const saveMyTeams = async () => {
-  const user_id = Cookies.get("userToken");
+   const user_id = Cookies.get('userToken');
 
-  const newTeam = { ...myTeam };
+   const newTeam = { ...myTeam };
 
-  const value = {
-    number_of_teams: 1,
-    teams: [newTeam],
-    user_id,
-  };
-  console.log(value);
+   const value = {
+      number_of_teams: 1,
+      teams: [newTeam],
+      user_id,
+   };
+   console.log(value);
 
-  if (user_id) {
-    try {
-      const response = await axios.post(`${URL}user/myteams/create`, value, {
-        headers: {
-          Authorization: "Bearer " + user_id,
-        },
-      });
+   if (user_id) {
+      try {
+         const response = await axios.post(`${URL}user/myteams/create`, value, {
+            headers: {
+               Authorization: 'Bearer ' + user_id,
+            },
+         });
 
-      console.log(response.data);
-      if (response.status === 200) return console.log("SUCCESS");
-    } catch (error) {
-      return console.log(error.response);
-    }
-  } else console.log("Pas d'identifiant. Requis");
+         console.log(response.data);
+         if (response.status === 200) return console.log('SUCCESS');
+      } catch (error) {
+         return console.log(error.response);
+      }
+   } else console.log("Pas d'identifiant. Requis");
 };
 // --------------------------->
 
 // fetch mes equipes A PARTIR DE LA DTB
 
 export const fetchMySavedTeams = async () => {
-  const user_id = Cookies.get("userToken");
+   const user_id = Cookies.get('userToken');
 
-  if (user_id) {
-    try {
-      const response = await axios.get(`${URL}user/myteam?user_id=${user_id}`);
-      console.log(response.data);
+   if (user_id) {
+      try {
+         const response = await axios.get(
+            `${URL}user/myteam?user_id=${user_id}`
+         );
+         console.log(response.data);
 
-      myTeam = { equipe: [], valeur: 0 };
+         myTeam = { equipe: [], valeur: 0 };
 
-      await response.data.teams[0].equipe.forEach((item) => {
-        myTeam.equipe.push(item);
-      });
-      myTeam.valeur = response.data.teams[0].valeur;
+         await response.data.teams[0].equipe.forEach((item) => {
+            myTeam.equipe.push(item);
+         });
+         myTeam.valeur = response.data.teams[0].valeur;
 
+         return { ...myTeam };
+      } catch (error) {
+         console.log(error.data);
+         return error.data.response;
+      }
+   } else {
       return { ...myTeam };
-    } catch (error) {
-      console.log(error.data);
-      return error.data.response;
-    }
-  } else {
-    return { ...myTeam };
-  }
+   }
 };
 
 // Modifier mes équipes
 export const updateMyTeams = async () => {
-  const user_id = Cookies.get("userToken");
+   const user_id = Cookies.get('userToken');
 
-  const value = {
-    number_of_teams: 1,
-    teams: [{ ...myTeam }],
-    user_id,
-  };
-  console.log(value);
-  try {
-    const response = await axios.put(`${URL}user/myteam/update`, value, {
-      headers: {
-        Authorization: "Bearer " + user_id,
-      },
-    });
-    console.log(response.data);
-  } catch (error) {
-    console.log(error.response);
-    return error;
-  }
+   const value = {
+      number_of_teams: 1,
+      teams: [{ ...myTeam }],
+      user_id,
+   };
+   console.log(value);
+   try {
+      const response = await axios.put(`${URL}user/myteam/update`, value, {
+         headers: {
+            Authorization: 'Bearer ' + user_id,
+         },
+      });
+      console.log(response.data);
+   } catch (error) {
+      console.log(error.response);
+      return error;
+   }
 };
 
-console.log("EXECUTION");
+console.log('EXECUTION');
 fetchMySavedTeams();
 
 // ==============================>
