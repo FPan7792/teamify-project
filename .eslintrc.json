@@ -1,0 +1,50 @@
+{
+   "env": {
+      "browser": true,
+      "es2021": true
+   },
+   "extends": [
+      "plugin:react/recommended",
+      "airbnb",
+      "plugin:react/jsx-runtime",
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier"
+   ],
+   "parser": "@typescript-eslint/parser",
+   "parserOptions": {
+      "ecmaFeatures": {
+         "jsx": true
+      },
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+   },
+   "plugins": ["react", "@typescript-eslint", "prettier"],
+   "rules": {
+      "prettier/prettier": "warn",
+      "semi": "warn",
+      "jsx-quotes": "off",
+      "no-console": "off",
+      "react/jsx-filename-extension": [
+         2,
+         { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+      ],
+      "no-nested-ternary": "off",
+      "no-unused-vars": "warn",
+      "consistent-return": "off",
+      "prefer-template": "warn",
+      "react/no-array-index-key": "off",
+      "react/prop-types": "warn",
+      "arrow-body-style": "warn",
+      "no-use-before-define": "warn",
+      "no-plusplus": "off",
+      "camelcase": "off",
+      "no-else-return": "warn",
+      "no-param-reassign": "warn",
+      "react/jsx-props-no-spreading": "warn",
+      "react/function-component-definition": "warn",
+      "import/no-unresolved": "warn",
+      "import/extensions": "warn"
+   }
+}
