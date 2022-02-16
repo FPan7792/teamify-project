@@ -5,19 +5,7 @@ import leagues from '../Datas/Leagues.json';
 
 import { Player, Team, UserBox } from './Intefaces/interfaces-requests';
 
-export const defineURL = () => {
-   let URL: string;
-
-   if (process.env.NODE === 'production') {
-      URL = 'https://teamify-project.herokuapp.com/';
-   } else URL = 'http://127.0.0.1:3001/';
-
-   console.log(URL);
-
-   return URL;
-};
-
-const URL: string = defineURL();
+export const URL = 'https://teamify-project.herokuapp.com/';
 
 // Faire une requete TransferMarket
 export const fetchTransfertInfos = async (playerName: string) => {

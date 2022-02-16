@@ -21,7 +21,7 @@ import {
 } from '../Requests/alerts';
 
 import { Alerte, User } from '../Requests/Intefaces/interfaces-requests';
-import { defineURL } from '../Requests/requests';
+import { URL } from '../Requests/requests';
 
 type FormData = {
    username: string;
@@ -31,7 +31,6 @@ type FormData = {
 };
 
 function SignUp() {
-   const URL = defineURL();
    const history = useHistory();
 
    // css conditionnel des inputs
