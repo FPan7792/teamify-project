@@ -10,15 +10,16 @@ import { useMutation, useQueryClient } from 'react-query';
 import Cookies from 'js-cookie';
 import { setUserToken } from '../Requests/user';
 
+import { defineURL } from '../Requests/requests';
 import {
    alerteErrorFormEmail,
    alerteValidationConnection,
 } from '../Requests/alerts';
 
-import { URL } from '../Requests/requests';
 import { Alerte, User } from '../Requests/Intefaces/interfaces-requests';
 
 function LogIn() {
+   const URL = defineURL();
    const history = useHistory();
 
    // css conditionnel des inputs

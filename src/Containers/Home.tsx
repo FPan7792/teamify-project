@@ -29,6 +29,7 @@ import { LeaguesSchemas } from '../Datas/interfaces';
 
 // barre de recherche
 import SearchBar from '../Components/SearchBar';
+
 function Home() {
    return (
       <div className='font-Dosis flex justify-center items-center flex-col'>

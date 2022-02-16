@@ -5,10 +5,19 @@ import leagues from '../Datas/Leagues.json';
 
 import { Player, Team, UserBox } from './Intefaces/interfaces-requests';
 
-export const URL =
-   process.env.NODE_ENV === 'production'
-      ? 'https://teamify-project.herokuapp.com/'
-      : 'http://127.0.0.1:3001/';
+export const defineURL = () => {
+   let URL: string;
+
+   if (process.env.NODE === 'production') {
+      URL = 'https://teamify-project.herokuapp.com/';
+   } else URL = 'http://127.0.0.1:3001/';
+
+   console.log(URL);
+
+   return URL;
+};
+
+const URL: string = defineURL();
 
 // Faire une requete TransferMarket
 export const fetchTransfertInfos = async (playerName: string) => {
@@ -79,8 +88,8 @@ export const removeFromMyTeam = async (player: {
    console.log(myTeam.equipe);
 
    function parseValue(): number {
-      let parse: string = '';
-      let result: number = 0;
+      let parse = '';
+      let result = 0;
 
       if (player.player.value === '0') {
          return result;

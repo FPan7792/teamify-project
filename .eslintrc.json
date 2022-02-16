@@ -45,6 +45,7 @@
       "react/jsx-props-no-spreading": "warn",
       "react/function-component-definition": "warn",
       "import/no-unresolved": "warn",
-      "import/extensions": "warn"
+      "import/extensions": "warn",
+      "no-unneeded-ternary": "warn"
    }
 }
