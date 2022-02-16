@@ -20,8 +20,8 @@ import {
    alerteValidationCreateAccount,
 } from '../Requests/alerts';
 
-import { URL } from '../Requests/requests';
 import { Alerte, User } from '../Requests/Intefaces/interfaces-requests';
+import { defineURL } from '../Requests/requests';
 
 type FormData = {
    username: string;
@@ -31,6 +31,7 @@ type FormData = {
 };
 
 function SignUp() {
+   const URL = defineURL();
    const history = useHistory();
 
    // css conditionnel des inputs
